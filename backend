@@ -1,0 +1,13 @@
+const express = require('express'); // Import required modules
+const app = express(); // Create an Express application
+const port = 3000; // Define the port number
+
+app.get('/', (req, res) => { // Define a route for the root URL
+    res.send('Monster Mayhem Backend'); // Send a response with a message
+});
+
+// Start the server and listen for incoming requests
+app.listen(port, () => {
+    // Log a message when the server starts
+    console.log(`Server running at http://localhost:${port}`);
+});
