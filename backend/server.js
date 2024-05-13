@@ -110,10 +110,12 @@ app.get('/games-played', (req, res) => { // Endpoint to get total games played
     res.status(200).json({ totalGamesPlayed: gamesPlayed });
 });
 
+/*
 //Trial to get requests to the root URL
 app.get('/', (req, res) => {
     res.send('Welcome to Monster Mayhem!');
 });
+*/
 
 // Start the server
 app.listen(port, () => {
