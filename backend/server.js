@@ -1,5 +1,5 @@
 // Import required modules
-const express = require('express'); 
+const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express(); // Create an Express application
@@ -9,7 +9,38 @@ app.use(bodyParser.json()); // Middleware to parse JSON requests
 
 // Game state
 let players = {}; // Object to store player information
-let gamesPlayed = 0; // Counter to track total games played
+let gameGrid = []; // Array to represent the game grid
+let turnOrder = []; // Array to store player turn order
+let currentPlayerIndex = 0; // Index of the current player in turnOrder
+let roundEnded = false; // Flag to track if the round has ended
+let gameOver = false; // Flag to track if the game is over
+let gamesPlayed = 0; // Variable to track the total games played
+
+// Function to initialize the game grid
+function initializeGameGrid() {
+    // Initialize the game grid with empty cells
+    gameGrid = Array.from({ length: 10 }, () => Array(10).fill(null));
+}
+
+// Function to initialize players
+function initializePlayers(playerIds) {
+    // Initialize players object with empty monster arrays
+    playerIds.forEach(playerId => {
+        players[playerId] = { monsters: [], wins: 0, losses: 0 };
+    });
+}
+
+// Function to start a new round
+function startRound() {
+    // Reset roundEnded flag
+    roundEnded = false;
+
+    // Determine turn order based on the number of monsters each player has
+    turnOrder = Object.keys(players).sort((a, b) => players[a].monsters.length - players[b].monsters.length);
+
+    // Set currentPlayerIndex to 0 (first player in turn order)
+    currentPlayerIndex = 0;
+}
 
 // Endpoint to handle player registration
 app.post('/register', (req, res) => {
@@ -18,7 +49,7 @@ app.post('/register', (req, res) => {
     // Check if player already registered
     if (!players[playerId]) {
         // If player not registered, add player to players object
-        players[playerId] = { wins: 0, losses: 0 };
+        players[playerId] = { monsters: [], wins: 0, losses: 0 };
         // Send success response
         res.status(200).send(`Player ${playerId} registered successfully.`);
     } else {
@@ -29,43 +60,41 @@ app.post('/register', (req, res) => {
 
 // Endpoint to handle game play
 app.post('/play', (req, res) => {
-    const { playerId, monstersPlaced } = req.body;
+    const { playerId, action } = req.body;
 
-    // Check if player registered
-    if (!players[playerId]) {
-        // If player not registered, send error response
-        res.status(400).send(`Player ${playerId} not registered.`);
+    // Check if game is over or round has ended
+    if (gameOver || roundEnded) {
+        res.status(400).send(`Cannot play. Game over or round ended.`);
         return;
     }
 
-    // Logic to handle game play
-    /* Game Mechanics:
-Each round, the player with the fewest monsters on the grid gets a turn first. If there is a tie, then it is randomly decided from among those with the least monsters.
-On a players turn, they may play either a vampire, a werewolf or a ghost anywhere on their edge of the grid. They may not move that monster this turn. They may also move any other monsters that they have. A monster can move any number of squares horizontally or vertically, or up to two squares diagonally. They can move over their own player’s monsters, but cannot move over other player’s monsters.
-If two monsters finish on the same square, they are dealt with as follows:
-●	If there’s a vampire and a werewolf, the werewolf is removed
-●	If there’s a werewolf and a ghost, the ghost is removed
-●	If there’s a ghost and a vampire, the vampire is removed
-●	If there’s two of the same kind of monster, both are removed
+    // Check if it's the player's turn
+    if (turnOrder[currentPlayerIndex] !== playerId) {
+        res.status(400).send(`Not your turn.`);
+        return;
+    }
 
-A player’s turn ends when they decide so, or if they have no monsters left to move.
-A round end once all players have had a turn. 
-A player is eliminated once 10 of their monsters have been removed. A player wins if all other players have been eliminated.
-*/
+    /* Game mechanics logic goes here... */
 
-    // For demonstration purposes, increment wins and losses randomly
-    players[playerId].wins += Math.random() < 0.5 ? 1 : 0;
-    players[playerId].losses += Math.random() < 0.5 ? 1 : 0;
+    // Update current player index for next turn
+    currentPlayerIndex = (currentPlayerIndex + 1) % turnOrder.length;
 
-    gamesPlayed++; // Increment total games played
+    // Check if all players have had a turn
+    if (currentPlayerIndex === 0) {
+        // End the round
+        roundEnded = true;
+    }
 
-    res.status(200).send(`Game played successfully.`);  // Send success response
-});
+    // Send success response
+    res.status(200).send(`Action executed.`);
+}); // <- Add a closing parenthesis here
 
-app.get('/stats/:playerId', (req, res) => { // Endpoint to get player statistics
+// Endpoint to get player statistics
+app.get('/stats/:playerId', (req, res) => {
     const { playerId } = req.params;
 
-    if (!players[playerId]) {  // To check if player registered
+    // Check if player registered
+    if (!players[playerId]) {
         // If player not registered, send error response
         res.status(400).send(`Player ${playerId} not registered.`);
         return;
@@ -79,6 +108,11 @@ app.get('/stats/:playerId', (req, res) => { // Endpoint to get player statistics
 app.get('/games-played', (req, res) => { // Endpoint to get total games played
     // Send total games played as JSON response
     res.status(200).json({ totalGamesPlayed: gamesPlayed });
+});
+
+//Trial to get requests to the root URL
+app.get('/', (req, res) => {
+    res.send('Welcome to Monster Mayhem!');
 });
 
 // Start the server
