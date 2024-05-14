@@ -42,6 +42,25 @@ function startRound() {
     currentPlayerIndex = 0;
 }
 
+// Function to place a monster on the grid
+function placeMonster(playerId, monsterType, position) {
+    // Check if position is valid
+    if (isValidPosition(position)) {
+        // Place the monster on the grid
+        gameGrid[position.x][position.y] = { player: playerId, type: monsterType };
+        // Add monster to player's monsters array
+        players[playerId].monsters.push({ type: monsterType, position });
+        return true;
+    }
+    return false;
+}
+
+// Function to check if a position is valid
+function isValidPosition(position) {
+    // Check if position is within the grid bounds
+    return position.x >= 0 && position.x < 10 && position.y >= 0 && position.y < 10;
+}
+
 // Endpoint to handle player registration
 app.post('/register', (req, res) => {
     const { playerId } = req.body;
@@ -74,7 +93,23 @@ app.post('/play', (req, res) => {
         return;
     }
 
-    /* Game mechanics logic goes here... */
+    // Check action type
+    switch (action.type) {
+        case 'place':
+            // Place monster on the grid
+            const placed = placeMonster(playerId, action.monsterType, action.position);
+            if (!placed) {
+                res.status(400).send(`Invalid position.`);
+                return;
+            }
+            break;
+        case 'move':
+            // Implement move logic here...
+            break;
+        default:
+            res.status(400).send(`Invalid action type.`);
+            return;
+    }
 
     // Update current player index for next turn
     currentPlayerIndex = (currentPlayerIndex + 1) % turnOrder.length;
@@ -87,7 +122,7 @@ app.post('/play', (req, res) => {
 
     // Send success response
     res.status(200).send(`Action executed.`);
-}); // <- Add a closing parenthesis here
+});
 
 // Endpoint to get player statistics
 app.get('/stats/:playerId', (req, res) => {
@@ -109,13 +144,6 @@ app.get('/games-played', (req, res) => { // Endpoint to get total games played
     // Send total games played as JSON response
     res.status(200).json({ totalGamesPlayed: gamesPlayed });
 });
-
-/*
-//Trial to get requests to the root URL
-app.get('/', (req, res) => {
-    res.send('Welcome to Monster Mayhem!');
-});
-*/
 
 // Start the server
 app.listen(port, () => {
