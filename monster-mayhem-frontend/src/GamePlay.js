@@ -1,25 +1,28 @@
-// Import necessary dependencies
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import socketIOClient from 'socket.io-client';
 
-// GamePlay component for playing the game
 const GamePlay = () => {
-  // Render the gameplay interface
-  
+  const [gameState, setGameState] = useState(null);
+
+  useEffect(() => {
+    const socket = socketIOClient('http://localhost:3000');
+
+    // Handle receiving updated game state from the server
+    socket.on('gameStateUpdated', (updatedGameState) => {
+      setGameState(updatedGameState);
+    });
+
+    return () => socket.disconnect(); // Cleanup on component unmount
+  }, []);
+
+  const handlePlay = () => {
+    // Handle player actions and send to server...
+  };
+
   return (
     <div>
       <h2>Gameplay</h2>
-      <div>
-        <label htmlFor="playerId">Player ID:</label>
-        <input type="text" id="playerId" value={playerId} onChange={(e) => setPlayerId(e.target.value)} />
-      </div>
-      <div>
-        <label htmlFor="action">Action:</label>
-        <select id="action" value={action} onChange={(e) => setAction(e.target.value)}>
-          <option value="">Select Action</option>
-          <option value="place">Place Monster</option>
-          <option value="move">Move Monster</option>
-        </select>
-      </div>
+      {/* Render game UI based on gameState */}
       <button onClick={handlePlay}>Play</button>
     </div>
   );
