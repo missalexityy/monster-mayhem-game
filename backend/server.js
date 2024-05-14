@@ -57,10 +57,18 @@ io.on('connection', (socket) => {
         // Check action type
         switch (action.type) {
             case 'place':
-                // place monster logic 
+                if (placeMonster(playerId, action.monsterType, action.position)) {
+                    io.emit('gameSuccess', `Monster placed successfully.`);
+                } else {
+                    io.emit('gameError', `Invalid position.`);
+                }
                 break;
             case 'move':
-                // move monster logic 
+                if (moveMonster(playerId, action.monsterId, action.position)) {
+                    io.emit('gameSuccess', `Monster moved successfully.`);
+                } else {
+                    io.emit('gameError', `Invalid move.`);
+                }
                 break;
             default:
                 io.emit('gameError', `Invalid action type.`);
