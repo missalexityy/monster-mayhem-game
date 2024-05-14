@@ -95,6 +95,30 @@ io.on('connection', (socket) => {
     });
 });
 
+// Function to place a monster on the grid
+function placeMonster(playerId, monsterType, position) {
+    // Check if position is valid
+    if (isValidPosition(position)) {
+        // Place the monster on the grid
+        gameGrid[position.x][position.y] = { player: playerId, type: monsterType };
+        // Add monster to player's monsters array
+        players[playerId].monsters.push({ type: monsterType, position });
+        return true;
+    }
+    return false;
+}
+
+// Function to move a monster on the grid
+function moveMonster(playerId, monsterId, newPosition) {
+    // Implement move logic here
+}
+
+// Function to check if a position is valid
+function isValidPosition(position) {
+    // Check if position is within the grid bounds
+    return position.x >= 0 && position.x < 10 && position.y >= 0 && position.y < 10;
+}
+
 // Start the server
 server.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
