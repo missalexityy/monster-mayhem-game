@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+// Import necessary dependencies
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'; // React Router for routing
+import RegistrationForm from './RegistrationForm'; // Import RegistrationForm component
+import GamePlay from './GamePlay'; // Import GamePlay component
+import Statistics from './Statistics'; // Import Statistics component
 
-function App() {
+// App component to define routes and display components
+const App = () => {
+  // Render the app with routing
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        {/* Define routes */}
+        <Switch>
+          {/* Route for player registration */}
+          <Route path="/register" component={RegistrationForm} />
+          {/* Route for playing the game */}
+          <Route path="/play" component={GamePlay} />
+          {/* Route for displaying player statistics */}
+          <Route path="/stats" component={Statistics} />
+        </Switch>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
