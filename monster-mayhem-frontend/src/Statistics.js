@@ -10,14 +10,15 @@ const Statistics = () => {
   // Fetch player statistics when component mounts
   useEffect(() => {
     const fetchStats = async () => {
-      try {
-        // Make a GET request to fetch player statistics using Axios
-        const response = await axios.get('http://localhost:3000/stats/PLAYER_ID'); // Replace PLAYER_ID with actual player ID in the future maybe
-        setStats(response.data); // Update state with fetched statistics
-      } catch (error) {
-        console.error('Failed to fetch player statistics:', error); // Log error if fetching fails
-      }
+        try {
+            // Make a GET request to fetch player statistics using Axios
+            const response = await axios.get(`http://localhost:3000/stats/${playerId}`);
+            setStats(response.data); // Update state with fetched statistics
+        } catch (error) {
+            console.error('Failed to fetch player statistics:', error); // Log error if fetching fails
+        }
     };
+    
 
     fetchStats(); // Call fetchStats function
   }, []); // Empty dependency array ensures useEffect runs only once
