@@ -100,10 +100,11 @@ io.on('connection', (socket) => {
             currentPlayerIndex = (currentPlayerIndex + 1) % turnOrder.length;
         }
         
-        // Emit an event to inform all clients about the disconnection and updated game state
-        io.emit('playerDisconnected', disconnectedPlayerId);
-        io.emit('gameStateUpdated', gameState);
+        io.emit('playerDisconnected', disconnectedPlayerId); // Emit an event to inform all clients about the disconnection 
+        io.emit('gameStateUpdated', gameState); // Emit updated game state to all clients
         
+        gamesPlayed++;  // Increment games played when a new game starts
+
         console.log(`Player ${disconnectedPlayerId} disconnected.`);
     }
 });
