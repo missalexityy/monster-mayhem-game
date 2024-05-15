@@ -6,16 +6,12 @@ const socketIo = require('socket.io');
 
 // Define constants
 const PORT = 3000; // Define the port number
-
 // Create an Express application
 const app = express();
-
 // Create HTTP server
 const server = http.createServer(app);
-
 // Attach Socket.IO to the server
 const io = socketIo(server);
-
 // Middleware to parse JSON requests
 app.use(bodyParser.json());
 
@@ -91,8 +87,27 @@ io.on('connection', (socket) => {
     // Handle disconnect
     socket.on('disconnect', () => {
         console.log('A client disconnected.');
-        // Implement logic to handle player disconnection
-    });
+        // Find the disconnected player's ID
+    const disconnectedPlayerId = Object.keys(players).find(id => players[id].socketId === socket.id);
+    
+    // Check if the disconnected player exists
+    if (disconnectedPlayerId) {
+        // Remove the disconnected player from the players object
+        delete players[disconnectedPlayerId];
+        
+        // If the disconnected player was the current player, move to the next player's turn
+        if (turnOrder[currentPlayerIndex] === disconnectedPlayerId) {
+            currentPlayerIndex = (currentPlayerIndex + 1) % turnOrder.length;
+        }
+        
+        // Emit an event to inform all clients about the disconnection and updated game state
+        io.emit('playerDisconnected', disconnectedPlayerId);
+        io.emit('gameStateUpdated', gameState);
+        
+        console.log(`Player ${disconnectedPlayerId} disconnected.`);
+    }
+});
+
 });
 
 // Function to place a monster on the grid
@@ -110,7 +125,13 @@ function placeMonster(playerId, monsterType, position) {
 
 // Function to move a monster on the grid
 function moveMonster(playerId, monsterId, newPosition) {
-    // Implement move logic here
+    const playerMonsters = players[playerId].monsters;
+    const monsterIndex = playerMonsters.findIndex(monster => monster.id === monsterId);
+    if (monsterIndex !== -1 && isValidPosition(newPosition)) {
+        playerMonsters[monsterIndex].position = newPosition;
+        return true;
+    }
+    return false;
 }
 
 // Function to check if a position is valid
