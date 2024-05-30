@@ -22,6 +22,7 @@ const App = () => {
       <div>
         {/* Define routes */}
         <Routes>
+          <Route exact path="/" component={GamePlay} />
           {/* Route for player registration */}
           <Route path="/register" element={<RegistrationForm onRegister={handleRegister} />} />
           {/* Route for playing the game */}

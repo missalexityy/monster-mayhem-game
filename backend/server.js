@@ -4,21 +4,6 @@ const bodyParser = require('body-parser');
 const http = require('http');
 const socketIo = require('socket.io');
 
-const App = () => {
-    return (
-      <Router>
-        <Switch>
-          <Route exact path="/" component={GamePlayWrapper} />
-        </Switch>
-      </Router>
-    );
-  };
-  
-  // Wrapper component to pass playerId to GamePlay
-  const GamePlayWrapper = () => {
-    const playerId = "player1"; // Hardcoded for example purposes
-    return <GamePlay playerId={playerId} />;
-  };
 // Define constants
 const PORT = 3000; // Define the port number
 // Create an Express application
