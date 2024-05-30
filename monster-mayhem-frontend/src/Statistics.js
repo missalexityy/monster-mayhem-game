@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // Axios for making HTTP requests
 
 // Statistics component for displaying player statistics
-const Statistics = () => {
+const Statistics = ({ playerId }) => {  // Added playerId as a prop
   // State to store player statistics
   const [stats, setStats] = useState({});
 
@@ -21,7 +21,7 @@ const Statistics = () => {
     
 
     fetchStats(); // Call fetchStats function
-  }, []); // Empty dependency array ensures useEffect runs only once
+  }, [playerId]);  // Added playerId to dependency array
 
   // Render player statistics
   return (
