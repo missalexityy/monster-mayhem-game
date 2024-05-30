@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
 
-const socket = socketIOClient('http://localhost:3000'); //Initialize socket connection outside the component
+const socket = socketIOClient('http://localhost:3000'); // Initialize socket connection outside the component
 
 const GamePlay = ({ playerId }) => {  // Added playerId as a prop
   const [gameState, setGameState] = useState(null);
@@ -26,33 +26,35 @@ const GamePlay = ({ playerId }) => {  // Added playerId as a prop
     }
   };
 
- // Function to handle moving a monster on the grid
- const handleMoveMonster = (monsterId, newPosition) => {
-  if (gameState && gameState.currentPlayer === playerId) {  
-    // Send move monster action to server
-    socket.emit('play', playerId, { type: 'move', monsterId, newPosition });
-  } else {
-    console.log('Not your turn');
-  }
-};
+  // Function to handle moving a monster on the grid
+  // Note: This function is currently unused, so we can comment it out to remove the warning
+  // const handleMoveMonster = (monsterId, newPosition) => {
+  //   if (gameState && gameState.currentPlayer === playerId) {
+  //     // Send move monster action to server
+  //     socket.emit('play', playerId, { type: 'move', monsterId, newPosition });
+  //   } else {
+  //     console.log('Not your turn');
+  //   }
+  // };
 
-// Function to handle ending the player's turn
-const handleEndTurn = () => {
-  if (gameState && gameState.currentPlayer === playerId) {  
-    // Send end turn action to server
-    socket.emit('endTurn', playerId);
-  } else {
-    console.log('Not your turn');
-  }
-};
+  // Function to handle ending the player's turn
+  const handleEndTurn = () => {
+    if (gameState && gameState.currentPlayer === playerId) {
+      // Send end turn action to server
+      socket.emit('endTurn', playerId);
+    } else {
+      console.log('Not your turn');
+    }
+  };
 
-// Function to select a monster for moving
-const handleSelectMonster = (monsterId) => {
-  // Select a monster to move
-  setSelectedMonster(monsterId);
-};
+  // Function to select a monster for moving
+  // Note: This function is currently unused, so we can comment it out to remove the warning
+  // const handleSelectMonster = (monsterId) => {
+  //   // Select a monster to move
+  //   setSelectedMonster(monsterId);
+  // };
 
- return (
+  return (
     <div>
       <h2>Gameplay</h2>
       {/* Render game UI based on gameState */}
