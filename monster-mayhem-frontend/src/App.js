@@ -13,6 +13,7 @@ const App = () => {
   // Function to handle player registration and set player ID
   const handleRegister = (id) => {
     setPlayerId(id);
+    console.log("Player ID set to:", id); // Debugging line
   };
 
   // Render the app with routing

@@ -15,6 +15,7 @@ const RegistrationForm = () => {
       alert(response.data); // Show success message
     } catch (error) {
       alert('Failed to register. Please try again.'); // Show error message
+      console.error("Registration error:", error); // Debugging line
     }
   };
 
