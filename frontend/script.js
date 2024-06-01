@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
      }
  
      startGameBtn.addEventListener("click", () => {
-         const playerNameInputs = playerNamesContainer.querySelectorAll("input");
+        const startGameBtn = document.getElementById("startGame");
  
          players = Array.from(playerNameInputs)
              .map((input, index) => {
