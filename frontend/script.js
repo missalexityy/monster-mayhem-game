@@ -25,6 +25,47 @@ document.addEventListener("DOMContentLoaded", () => {
        // { monsters: [], name: "Player 2", color: "blue" }
     ];
 
+     // Update player name inputs when number of players changes
+     numPlayersSelect.addEventListener("change", updatePlayerNameInputs);
+
+     function updatePlayerNameInputs() {
+         const numPlayers = parseInt(numPlayersSelect.value);
+         playerNamesContainer.innerHTML = '';
+ 
+         for (let i = 1; i <= numPlayers; i++) {
+             const label = document.createElement("label");
+             label.setAttribute("for", `player${i}Name`);
+             label.textContent = `Player ${i} Name:`;
+ 
+             const input = document.createElement("input");
+             input.setAttribute("type", "text");
+             input.setAttribute("id", `player${i}Name`);
+             input.setAttribute("placeholder", `Enter Player ${i} Name`);
+ 
+             playerNamesContainer.appendChild(label);
+             playerNamesContainer.appendChild(input);
+         }
+     }
+ 
+     startGameBtn.addEventListener("click", () => {
+         const playerNameInputs = playerNamesContainer.querySelectorAll("input");
+ 
+         players = Array.from(playerNameInputs)
+             .map((input, index) => {
+                 if (input.value.trim() !== "") {
+                     return { monsters: [], name: input.value.trim() };
+                 }
+             })
+             .filter(Boolean);
+ 
+         if (players.length >= 2 && players.length <= 4) {
+             switchPlayer();
+             alert("Game Started!");
+         } else {
+             alert("Please enter names for at least 2 players and up to 4 players.");
+         }
+     });
+ 
     // Update number of players when input changes
     numPlayersInput.addEventListener("change", () => {
         const numPlayers = parseInt(numPlayersInput.value);
