@@ -135,9 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const cell = grid.children[index];
             const monster = document.createElement("div");
             monster.className = monsterType;
-            monster.textContent = currentPlayer + 1; // Label the monster with the player number
             monster.dataset.player = currentPlayer; // Set the data attribute to indicate the player
-            monster.style.backgroundColor = monsterColors[monsterType];
+            monster.innerHTML = `${monsterIcons[monsterType]} ${currentPlayer + 1}`; // Set innerHTML to include the emoji/icon and player number
             cell.appendChild(monster);
 
             //Update game state
