@@ -15,8 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
         ghost: 'gray'
     };
 
+    //Game state variables
     let players = [];
     let currentPlayer = 0;
+    let gameStarted = false; //To see if the game has started
     let monsterPlaced = false; // Flag to track if a monster has been placed by the current player
     //let monstersPlaced = 0; // Track the number of monsters placed
     let selectedMonster = null; // Variable to track the selected monster for moving
@@ -67,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePlayerNameInputs();
 
     startGameBtn.addEventListener("click", () => {
+        gameStarted = true;
         console.log("Start game button clicked");
         const playerNameInputs = playerNamesContainer.querySelectorAll("input");
     
@@ -77,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             })
             .filter(Boolean);
-    
+
         if (players.length >= 2 && players.length <= 4) {
             alert("Game Started!");
             switchPlayer(); // Start the game by switching to the first player's turn
@@ -95,6 +98,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Place a monster only after clicking the button
     placeMonsterBtn.addEventListener("click", () => {
+        if (!gameStarted) {
+            alert("You must start the game first!");
+            return;
+        }
         console.log("Place monster button clicked");
         grid.addEventListener("click", placeMonsterOnClick);
         isMoveMode = false; // Disable move mode when placing a monster
@@ -102,6 +109,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Place a monster on click
     function placeMonsterOnClick(event) {
+        if (!gameStarted) {
+            alert("You must start the game first!");
+            return;
+        }
         if (isMoveMode) return; // Ensure move mode is not enabled
 
         const index = parseInt(event.target.dataset.index);
