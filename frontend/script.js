@@ -4,7 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const monsterTypeSelect = document.getElementById("monsterType");
     const numPlayersInput = document.getElementById("numPlayers");
     const startGameBtn = document.getElementById("startGame");
-    
+    const playerNamesContainer = document.getElementById("playerNames");
+
     // Define colors for monsters
     const monsterColors = {
         vampire: 'red',
@@ -21,52 +22,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     let currentPlayer = 0;
-    let players = [
-       // { monsters: [], name: "Player 1", color: "red" }, 
-       // { monsters: [], name: "Player 2", color: "blue" }
-    ];
+    let players = [];
 
-     // Update player name inputs when number of players changes
-     numPlayersInput.addEventListener("change", updatePlayerNameInputs);
+    // Update player name inputs when number of players changes
+    numPlayersInput.addEventListener("change", updatePlayerNameInputs);
 
-     function updatePlayerNameInputs() {
-         const numPlayers = parseInt(numPlayersSelect.value);
-         playerNamesContainer.innerHTML = '';
- 
-         for (let i = 1; i <= numPlayers; i++) {
-             const label = document.createElement("label");
-             label.setAttribute("for", `player${i}Name`);
-             label.textContent = `Player ${i} Name:`;
- 
-             const input = document.createElement("input");
-             input.setAttribute("type", "text");
-             input.setAttribute("id", `player${i}Name`);
-             input.setAttribute("placeholder", `Enter Player ${i} Name`);
- 
-             playerNamesContainer.appendChild(label);
-             playerNamesContainer.appendChild(input);
-         }
-     }
- 
-     startGameBtn.addEventListener("click", () => {
-         const playerNameInputs = playerNamesContainer.querySelectorAll("input");
- 
-         players = Array.from(playerNameInputs)
-             .map((input, index) => {
-                 if (input.value.trim() !== "") {
-                     return { monsters: [], name: input.value.trim() };
-                 }
-             })
-             .filter(Boolean);
- 
-         if (players.length >= 2 && players.length <= 4) {
-             switchPlayer();
-             alert("Game Started!");
-         } else {
-             alert("Please enter names for at least 2 players and up to 4 players.");
-         }
-     });
- 
+    function updatePlayerNameInputs() {
+        const numPlayers = parseInt(numPlayersInput.value);
+        playerNamesContainer.innerHTML = '';
+
+        for (let i = 1; i <= numPlayers; i++) {
+            const label = document.createElement("label");
+            label.setAttribute("for", `player${i}Name`);
+            label.textContent = `Player ${i} Name:`;
+
+            const input = document.createElement("input");
+            input.setAttribute("type", "text");
+            input.setAttribute("id", `player${i}Name`);
+            input.setAttribute("placeholder", `Enter Player ${i} Name`);
+
+            playerNamesContainer.appendChild(label);
+            playerNamesContainer.appendChild(input);
+        }
+    }
+
+    startGameBtn.addEventListener("click", () => {
+        const playerNameInputs = playerNamesContainer.querySelectorAll("input");
+
+        players = Array.from(playerNameInputs)
+            .map((input, index) => {
+                if (input.value.trim() !== "") {
+                    return { monsters: [], name: input.value.trim() };
+                }
+            })
+            .filter(Boolean);
+
+        if (players.length >= 2 && players.length <= 4) {
+            switchPlayer();
+            alert("Game Started!");
+        } else {
+            alert("Please enter names for at least 2 players and up to 4 players.");
+        }
+    });
+
     // Update number of players when input changes
     numPlayersInput.addEventListener("change", () => {
         const numPlayers = parseInt(numPlayersInput.value);
@@ -89,14 +87,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!cell.innerHTML) {
             const monster = document.createElement("div");
             monster.className = monsterType;
-            monster.style.backgroundColor = players[currentPlayer].color;
+            monster.style.backgroundColor = monsterColors[monsterType]; // Use monsterColors object
             cell.appendChild(monster);
             players[currentPlayer].monsters.push({ type: monsterType, index });
             switchPlayer();
         }
     }
 
-    //Switch to the next player
+    // Switch to the next player
     function switchPlayer() {
         currentPlayer = (currentPlayer + 1) % players.length;
         alert(`${players[currentPlayer].name}'s turn`);
@@ -106,6 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Click on a grid cell to place your monster");
     });
 
-    //Initialize game with default number of players
+    // Initialize game with default number of players
     initializePlayers(parseInt(numPlayersInput.value));
 });
