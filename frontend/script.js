@@ -15,11 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
         grid.appendChild(cell);
     }
 
-    // Define colors for monsters
-    const monsterColors = {
-        vampire: 'red',
-        werewolf: 'black',
-        ghost: 'gray'
+    // Define emojis/icons for monsters
+    const monsterIcons = {
+        vampire: '🧛‍♀️',
+        werewolf: '🐺',
+        ghost: '👻'
     };
 
     //Game state variables
