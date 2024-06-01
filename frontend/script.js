@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let players = [];
     let currentPlayer = 0;
-    //let monsterPlaced = false; // Flag to track if a monster has been placed by the current player
+    let monsterPlaced = false; // Flag to track if a monster has been placed by the current player
     //let monstersPlaced = 0; // Track the number of monsters placed
     let selectedMonster = null; // Variable to track the selected monster for moving
     let isMoveMode = false; // Flag to track if move mode is enabled
@@ -168,15 +168,19 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(`Moving monster to destination index: ${destinationIndex}`); // Debug
         
         if (!isNaN(destinationIndex) && selectedMonster) {
+            const sourceCell = grid.children[selectedMonster.index];
             const destinationCell = grid.children[destinationIndex];
             
          // Check if destination cell is empty or contains player's own monster
-         if (!destinationCell.firstChild || isOwnMonster(destinationIndex)) {
-            const sourceCell = grid.children[selectedMonster.index];
+         //if (!destinationCell.firstChild || isOwnMonster(destinationIndex)) {
+
+         // Check if the selected monster belongs to the current player
+            if (monster.dataset.player === currentPlayer.toString()) {
+
+            if (isValidMove(selectedMonster.index, destinationIndex) && canMoveToCell(destinationCell)) {
             const monster = sourceCell.firstChild;
 
-            // Check if the selected monster belongs to the current player
-            if (monster.dataset.player === currentPlayer.toString()) {
+    
             destinationCell.appendChild(monster);
             players[currentPlayer].monsters = players[currentPlayer].monsters.map(monster => {
                 if (monster.index === selectedMonster.index) {
@@ -189,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
             selectedMonster = null;
             grid.removeEventListener("click", moveMonsterToDestination);
             switchPlayer();
+            handleMonsterInteractions(destinationCell); // Handle interactions between monsters on the destination cell
 
         } else if (condition) {
             alert("You can only move your own monsters.");
@@ -197,19 +202,69 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             alert("You cannot move to a cell occupied by another player's monster.");
         }
-
-         // Handle interactions between monsters on the destination cell
-         handleMonsterInteractions(destinationCell);
     }
 }
 
-      // Initialize grid
-      for (let i = 0; i < 100; i++) {
-        const cell = document.createElement("div");
-        cell.dataset.index = i;
-        cell.addEventListener("click", (event) => placeMonsterOnClick(event));
-        grid.appendChild(cell);
+    // Create a new monster element
+    function createMonster(monsterType) {
+        const monster = document.createElement("div");
+            monster.className = monsterType;
+            monster.textContent = currentPlayer + 1; // Label with player number
+            monster.dataset.player = currentPlayer; // Set data attribute for the player
+            monster.style.backgroundColor = monsterColors[monsterType];
+        return monster;
+}
+
+    // Check if a move is valid
+    function isValidMove(startIndex, endIndex) {
+        const startX = startIndex % 10;
+        const startY = Math.floor(startIndex / 10);
+        const endX = endIndex % 10;
+        const endY = Math.floor(endIndex / 10);
+
+        const dx = Math.abs(endX - startX);
+        const dy = Math.abs(endY - startY);
+
+    // Move is valid if it's horizontal, vertical, or diagonal (up to 2 squares)
+    if ((dx === 0 || dy === 0) || (dx === dy && dx <= 2)) {
+        return checkPath(startIndex, endIndex, dx, dy);
     }
+    return false;
+}
+
+    // Check if the path for the move is clear
+    function checkPath(startIndex, endIndex, dx, dy) {
+        const startX = startIndex % 10;
+        const startY = Math.floor(startIndex / 10);
+        const endX = endIndex % 10;
+        const endY = Math.floor(endIndex / 10);
+
+        const xStep = (endX - startX) / Math.max(dx, 1);
+        const yStep = (endY - startY) / Math.max(dy, 1);
+
+        let x = startX + xStep;
+        let y = startY + yStep;
+
+        while (x !== endX || y !== endY) {
+            const index = y * 10 + x;
+            const cell = grid.children[index];
+
+        // Path is blocked if the cell contains a monster from another player
+        if (cell.firstChild && parseInt(cell.firstChild.dataset.player) !== currentPlayer) {
+            return false;
+        }
+
+        x += xStep;
+        y += yStep;
+    }
+
+    return true;
+}
+      
+    // Check if the destination cell is valid for moving
+    function canMoveToCell(cell) {
+        return !cell.firstChild || parseInt(cell.firstChild.dataset.player) === currentPlayer;
+}
 
     // Function to handle interactions between monsters when finishing on the same square
     function handleMonsterInteractions(cell) {
@@ -255,6 +310,13 @@ document.addEventListener("DOMContentLoaded", () => {
         initializePlayers(numPlayers);
     });
 
+    // Initialize grid
+    for (let i = 0; i < 100; i++) {
+        const cell = document.createElement("div");
+        cell.dataset.index = i;
+        cell.addEventListener("click", (event) => placeMonsterOnClick(event));
+        grid.appendChild(cell);
+    }
 
     // Switch to the next player
     function switchPlayer() {
