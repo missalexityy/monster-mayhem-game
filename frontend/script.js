@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
      // Update player name inputs when number of players changes
-     numPlayersSelect.addEventListener("change", updatePlayerNameInputs);
+     numPlayersInput.addEventListener("change", updatePlayerNameInputs);
 
      function updatePlayerNameInputs() {
          const numPlayers = parseInt(numPlayersSelect.value);
