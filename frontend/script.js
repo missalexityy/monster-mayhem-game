@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentPlayer = 0;
     let players = [];
     let monsterPlaced = false; // Flag to track if a monster has been placed by the current player
-
+    let selectedMonster = null; // Variable to track the selected monster for moving
 
     // Update player name inputs when number of players changes
     numPlayersInput.addEventListener("change", () => {
@@ -76,61 +76,69 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Update number of players when input changes
-    numPlayersInput.addEventListener("change", () => {
-        const numPlayers = parseInt(numPlayersInput.value);
-            initializePlayers(numPlayers);
-    });
-
-    // Initialize players
-    function initializePlayers(numPlayers) {
-        players = [];
-        for (let i = 0; i < numPlayers; i++) {
-            players.push({ monsters: [], name: `Player ${i + 1}` });
-        }
-        switchPlayer();
-    }
-
-     // Switch to the next player
-     function switchPlayer() {
-        currentPlayer = (currentPlayer + 1) % players.length;
-        // Check if all players have placed their monsters
-        if (players.every(player => player.monsters.length > 0)) {
-        // Check if the current player has already placed a monster
-        if (monsterPlaced) {
-            alert(`${players[currentPlayer].name}'s turn. You can move your monster.`);
-    } else {
-            alert(`${players[currentPlayer].name}'s turn. Place your monster.`);
-    }
-}
-// Reset the flag for the next player
-monsterPlaced = false;
-}
 
     // Initialize game with default number of players
     initializePlayers(parseInt(numPlayersInput.value));
 
-   // Place a monster or move a monster if one exists
-    function placeOrMoveMonster(index) {
-    const monsterType = monsterTypeSelect.value;
-    const cell = grid.children[index];
+   // Place a monster only after clicking the button
+   placeMonsterBtn.addEventListener("click", () => {
+    grid.addEventListener("click", placeMonsterOnClick);
+});
 
-    if (!cell.innerHTML) {
-        // Place a new monster
-        placeMonster(index);
-    } else {
-        // Move an existing monster
-        moveMonster(index);
+    // Move a monster only after clicking the button
+    moveMonsterBtn.addEventListener("click", () => {
+    grid.addEventListener("click", selectMonsterForMove);
+});
+
+    // Place a monster on click
+    function placeMonsterOnClick(event) {
+    const index = parseInt(event.target.dataset.index);
+    if (!isNaN(index) && !event.target.innerHTML) {
+        const monsterType = monsterTypeSelect.value;
+        const cell = grid.children[index];
+        const monster = document.createElement("div");
+        monster.className = monsterType;
+        monster.textContent = currentPlayer + 1; // Label the monster with the player number
+        monster.dataset.player = currentPlayer; // Set the data attribute to indicate the player
+        monster.style.backgroundColor = monsterColors[monsterType];
+        cell.appendChild(monster);
+        players[currentPlayer].monsters.push({ type: monsterType, index });
+        grid.removeEventListener("click", placeMonsterOnClick);
+        switchPlayer();
     }
 }
 
-// Event listener to handle monster placement and movement
-grid.addEventListener("click", (event) => {
-    const sourceIndex = parseInt(event.target.dataset.index);
-    if (!isNaN(sourceIndex)) {
-        placeOrMoveMonster(sourceIndex);
+    // Select a monster to move
+function selectMonsterForMove(event) {
+    const index = parseInt(event.target.dataset.index);
+    if (!isNaN(index) && event.target.dataset.player == currentPlayer) {
+        selectedMonster = { type: event.target.className, index };
+        grid.removeEventListener("click", selectMonsterForMove);
+        grid.addEventListener("click", moveMonsterToDestination);
     }
-});
+}
+
+// Move monster to the selected destination
+function moveMonsterToDestination(event) {
+    const destinationIndex = parseInt(event.target.dataset.index);
+    if (!isNaN(destinationIndex)) {
+        const destinationCell = grid.children[destinationIndex];
+
+        if (!destinationCell.innerHTML) {
+            const sourceCell = grid.children[selectedMonster.index];
+            const monster = sourceCell.firstChild;
+            destinationCell.appendChild(monster);
+            players[currentPlayer].monsters = players[currentPlayer].monsters.map(monster => {
+                if (monster.index === selectedMonster.index) {
+                    return { ...monster, index: destinationIndex };
+                }
+                return monster;
+            });
+            grid.removeEventListener("click", moveMonsterToDestination);
+            switchPlayer();
+        }
+    }
+}
 
 // Place a monster
 function placeMonster(index) {
@@ -139,13 +147,17 @@ function placeMonster(index) {
     if (!cell.innerHTML) {
         const monster = document.createElement("div");
         monster.className = monsterType;
+        monster.textContent = currentPlayer + 1; // Label the monster with the player number
+        monster.dataset.player = currentPlayer; // Set the data attribute to indicate the player
         monster.style.backgroundColor = monsterColors[monsterType];
         cell.appendChild(monster);
         players[currentPlayer].monsters.push({ type: monsterType, index });
         monsterPlaced = true; // Set the flag to true after placing the monster
-        switchPlayer();
+        setTimeout(() => {
+            switchPlayer();
+            alert(`${players[currentPlayer].name}'s turn`);
+        }, 100); // Delay to ensure the monster is placed before the alert
     }
-}
 
 // Function to move a monster
 function moveMonster(destinationIndex) {
@@ -162,6 +174,7 @@ function moveMonster(destinationIndex) {
         console.log("Cannot move over other player's monsters.");
     }
 }
+}
 
 // Function to check if the destination cell contains a monster belonging to the current player
 function isOwnMonster(index) {
@@ -170,6 +183,37 @@ function isOwnMonster(index) {
         return true;
     }
     return false;
+}
+
+  // Update number of players when input changes
+  numPlayersInput.addEventListener("change", () => {
+    const numPlayers = parseInt(numPlayersInput.value);
+        initializePlayers(numPlayers);
+});
+
+// Initialize players
+function initializePlayers(numPlayers) {
+    players = [];
+    for (let i = 0; i < numPlayers; i++) {
+        players.push({ monsters: [], name: `Player ${i + 1}` });
+    }
+    switchPlayer();
+}
+
+ // Switch to the next player
+ function switchPlayer() {
+    currentPlayer = (currentPlayer + 1) % players.length;
+    // Check if all players have placed their monsters
+    if (players.every(player => player.monsters.length > 0)) {
+    // Check if the current player has already placed a monster
+    if (monsterPlaced) {
+        alert(`${players[currentPlayer].name}'s turn. You can move your monster.`);
+} else {
+        alert(`${players[currentPlayer].name}'s turn. Place your monster.`);
+}
+}
+    // Reset the flag for the next player
+    monsterPlaced = false;
 }
 
 }); 
