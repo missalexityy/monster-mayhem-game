@@ -7,6 +7,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const startGameBtn = document.getElementById("startGame");
     const playerNamesContainer = document.getElementById("playerNames");
 
+    // Function to create the grid
+    function createGrid(rows, cols) {
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                const cell = document.createElement("div");
+                cell.className = "cell";
+                cell.dataset.index = i * cols + j;
+                grid.appendChild(cell);
+        }
+    }
+}
+
+// Create a 10x10 grid (or any size you prefer)
+createGrid(10, 10);
+
+
+    // Initialize grid
+    for (let i = 0; i < 100; i++) {
+        const cell = document.createElement("div");
+        cell.dataset.index = i;
+        cell.addEventListener("click", (event) => placeMonsterOnClick(event));
+        grid.appendChild(cell);
+    }
 
     // Define colors for monsters
     const monsterColors = {
@@ -20,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentPlayer = 0;
     let gameStarted = false; //To see if the game has started
     let monsterPlaced = false; // Flag to track if a monster has been placed by the current player
-    //let monstersPlaced = 0; // Track the number of monsters placed
     let selectedMonster = null; // Variable to track the selected monster for moving
     let isMoveMode = false; // Flag to track if move mode is enabled
     let isFirstRound = true; // Flag to track the first round of the game
@@ -68,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Call updatePlayerNameInputs() to initially display player name inputs
     updatePlayerNameInputs();
 
+    // Where the game starts
     startGameBtn.addEventListener("click", () => {
         gameStarted = true;
         console.log("Start game button clicked");
@@ -99,9 +122,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Place a monster only after clicking the button
     placeMonsterBtn.addEventListener("click", () => {
         if (!gameStarted) {
-            alert("You must start the game first!");
-            return;
-        }
+        alert("You must start the game first!");
+        return;
+    }
         console.log("Place monster button clicked");
         grid.addEventListener("click", placeMonsterOnClick);
         isMoveMode = false; // Disable move mode when placing a monster
@@ -142,6 +165,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Move a monster only after clicking the button
     moveMonsterBtn.addEventListener("click", () => {
+        if (!gameStarted) {
+            alert("You must start the game first!");
+            return;
+        }
         console.log("Move monster button clicked");
         isMoveMode = true; // Enable move mode
         grid.addEventListener("click", selectMonsterForMove);
@@ -149,6 +176,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Select a monster to move
     function selectMonsterForMove(event) {
+        if (!gameStarted) {
+            alert("You must start the game first!");
+            return;
+        }
         if (!isMoveMode) return; // Ensure move mode is enabled
         
         const cell = event.target.closest('.cell');
@@ -320,14 +351,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const numPlayers = parseInt(numPlayersInput.value);
         initializePlayers(numPlayers);
     });
-
-    // Initialize grid
-    for (let i = 0; i < 100; i++) {
-        const cell = document.createElement("div");
-        cell.dataset.index = i;
-        cell.addEventListener("click", (event) => placeMonsterOnClick(event));
-        grid.appendChild(cell);
-    }
 
     // Switch to the next player
     function switchPlayer() {
