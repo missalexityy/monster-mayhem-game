@@ -161,10 +161,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const destinationIndex = parseInt(event.target.dataset.index);
         if (!isNaN(destinationIndex) && selectedMonster) {
             const destinationCell = grid.children[destinationIndex];
-            const sourceCell = grid.children[selectedMonster.index];
-
+            
         if (!destinationCell.innerHTML || isOwnMonster(destinationIndex)) {
+            const sourceCell = grid.children[selectedMonster.index];
             const monster = sourceCell.firstChild;
+
+            // Check if the selected monster belongs to the current player
+            if (monster.dataset.player === currentPlayer.toString()) {
             destinationCell.appendChild(monster);
             players[currentPlayer].monsters = players[currentPlayer].monsters.map(monster => {
                 if (monster.index === selectedMonster.index) {
@@ -172,15 +175,48 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 return monster;
             });
+
+            // Handle interactions between monsters on the destination cell
+            handleMonsterInteractions(destinationCell);
+            
             selectedMonster = null;
             grid.removeEventListener("click", moveMonsterToDestination);
             switchPlayer();
+        } else {
+            alert("You can only move your own monsters.");
         } else {
             alert("You cannot move to a cell occupied by another player's monster.");
         }
     }
 }
 
+    // Function to handle interactions between monsters when finishing on the same square
+    function handleMonsterInteractions(cell) {
+        const monstersOnCell = Array.from(cell.children);
+
+    // Check if there are multiple monsters on the cell
+    if (monstersOnCell.length > 1) {
+        const monsterTypes = monstersOnCell.map(monster => monster.className);
+
+        // Check for specific combinations of monsters
+        if (monsterTypes.includes("vampire") && monsterTypes.includes("werewolf")) {
+            // Remove the werewolf
+            const werewolfIndex = monsterTypes.indexOf("werewolf");
+            cell.removeChild(monstersOnCell[werewolfIndex]);
+        } else if (monsterTypes.includes("werewolf") && monsterTypes.includes("ghost")) {
+            // Remove the ghost
+            const ghostIndex = monsterTypes.indexOf("ghost");
+            cell.removeChild(monstersOnCell[ghostIndex]);
+        } else if (monsterTypes.includes("ghost") && monsterTypes.includes("vampire")) {
+            // Remove the vampire
+            const vampireIndex = monsterTypes.indexOf("vampire");
+            cell.removeChild(monstersOnCell[vampireIndex]);
+        } else if (monsterTypes.every((val, i, arr) => val === arr[0])) {
+            // If all monsters are of the same type, remove all monsters
+            monstersOnCell.forEach(monster => cell.removeChild(monster));
+        }
+    }
+}
 
     // Function to check if the destination cell contains a monster belonging to the current player
     function isOwnMonster(index) {
