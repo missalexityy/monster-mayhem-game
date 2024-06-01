@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
     let currentPlayer = 0;
     let players = [];
+    let monsterPlaced = false; // Flag to track if a monster has been placed by the current player
+
 
     // Update player name inputs when number of players changes
     numPlayersInput.addEventListener("change", () => {
@@ -94,9 +96,16 @@ document.addEventListener("DOMContentLoaded", () => {
         currentPlayer = (currentPlayer + 1) % players.length;
         // Check if all players have placed their monsters
         if (players.every(player => player.monsters.length > 0)) {
-        alert(`${players[currentPlayer].name}'s turn`);
-        }
+        // Check if the current player has already placed a monster
+        if (monsterPlaced) {
+            alert(`${players[currentPlayer].name}'s turn. You can move your monster.`);
+    } else {
+            alert(`${players[currentPlayer].name}'s turn. Place your monster.`);
     }
+}
+// Reset the flag for the next player
+monsterPlaced = false;
+}
 
     // Initialize game with default number of players
     initializePlayers(parseInt(numPlayersInput.value));
@@ -133,8 +142,8 @@ function placeMonster(index) {
         monster.style.backgroundColor = monsterColors[monsterType];
         cell.appendChild(monster);
         players[currentPlayer].monsters.push({ type: monsterType, index });
+        monsterPlaced = true; // Set the flag to true after placing the monster
         switchPlayer();
-        //alert(`${players[currentPlayer].name}'s turn`);
     }
 }
 
