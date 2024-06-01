@@ -102,12 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Place a monster only after clicking the button
     placeMonsterBtn.addEventListener("click", () => {
-    if (!gameStarted) {
-        alert("You must start the game first!");
+        if (!gameStarted) {
+            alert("You must start the game first!");
         return;
     }
     console.log("Place monster button clicked");
-    grid.addEventListener("click", placeMonsterOnClick); // Corrected syntax
+    grid.addEventListener("click", placeMonsterOnClick); 
     monsterPlaced = true;
     isMoveMode = false; // Disable move mode when placing a monster
     actionClicked = true;
@@ -163,6 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
         isMoveMode = true; // Enable move mode
         grid.addEventListener("click", selectMonsterForMove);
         actionClicked = true;
+
+        moveMonsterBtn.disabled = true;
     });
 
     // Grid cell click handler
@@ -371,9 +373,6 @@ document.addEventListener("DOMContentLoaded", () => {
          // Check if all players have placed their monsters
         const allMonstersPlaced = players.every(player => player.monsters.length > 0);
 
-        // Display the turn of the current player to place their monster
-        //alert(`${players[currentPlayer].name}'s turn. Place your monster.`);
-
         if (!allMonstersPlaced) {
             // If not all monsters are placed, display message for placing a monster
             alert(`${players[currentPlayer].name}'s turn. Place your monster.`);
@@ -384,6 +383,12 @@ document.addEventListener("DOMContentLoaded", () => {
     
         // Reset the flag for the next player
         monsterPlaced = false;
-    }
+        actionClicked = false; //Reset actionClicked flag
+
+        // Re-enable the action buttons
+        placeMonsterBtn.disabled = false;
+        moveMonsterBtn.disabled = false;
+}
+
 
 });
