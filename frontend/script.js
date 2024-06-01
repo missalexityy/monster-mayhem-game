@@ -25,7 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let players = [];
 
     // Update player name inputs when number of players changes
-    numPlayersInput.addEventListener("change", updatePlayerNameInputs);
+    numPlayersInput.addEventListener("change", () => {
+        updatePlayerNameInputs();
+        const turnMessage = document.getElementById("turnMessage");
+    if (turnMessage) {
+        turnMessage.remove(); // Remove existing turn message if it exists
+    }
+    });
 
     function updatePlayerNameInputs() {
         const numPlayers = parseInt(numPlayersInput.value);
@@ -59,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (players.length >= 2 && players.length <= 4) {
             switchPlayer();
-            alert("Game Started!");
+            alert("Game Started! " + `${players[currentPlayer].name}'s turn`);
         } else {
             alert("Please enter names for at least 2 players and up to 4 players.");
         }
@@ -68,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update number of players when input changes
     numPlayersInput.addEventListener("change", () => {
         const numPlayers = parseInt(numPlayersInput.value);
-        initializePlayers(numPlayers);
+            initializePlayers(numPlayers);
     });
 
     // Initialize players
@@ -87,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!cell.innerHTML) {
             const monster = document.createElement("div");
             monster.className = monsterType;
-            monster.style.backgroundColor = monsterColors[monsterType]; // Use monsterColors object
+            monster.style.backgroundColor = monsterColors[monsterType];
             cell.appendChild(monster);
             players[currentPlayer].monsters.push({ type: monsterType, index });
             switchPlayer();
