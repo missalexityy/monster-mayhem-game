@@ -1,0 +1,107 @@
+body {
+    background-image: url('monstermayhem.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #f0f0f0; /* Lighter font color */
+}
+
+/* Adjustments for layout */
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 20px;
+}
+
+#playerNames {
+    margin-bottom: 10px;
+}
+
+#grid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(10, 40px); 
+    grid-template-rows: repeat(10, 40px);    
+    gap: 2px;
+    margin-top: 20px;
+    border: 2px solid black; 
+}
+
+#grid div {
+    width: 40px; 
+    height: 40px; 
+    background-color: #fff;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px; 
+    color: #f0f0f0; 
+}
+
+#grid div:hover {
+    background-color: #e0e0e0;
+}
+
+#actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #3a9933;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+#playerNames label,
+#playerNames input {
+    margin: 5px;
+    display: block;
+    color: #f0f0f0;
+}
+
+.monster {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 24px; 
+    color: #f0f0f0; 
+}
