@@ -7,22 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const startGameBtn = document.getElementById("startGame");
     const playerNamesContainer = document.getElementById("playerNames");
 
-    // Function to create the grid
-    function createGrid(rows, cols) {
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < cols; j++) {
-                const cell = document.createElement("div");
-                cell.className = "cell";
-                cell.dataset.index = i * cols + j;
-                grid.appendChild(cell);
-        }
-    }
-}
-
-// Create a 10x10 grid (or any size you prefer)
-createGrid(10, 10);
-
-
     // Initialize grid
     for (let i = 0; i < 100; i++) {
         const cell = document.createElement("div");
@@ -46,6 +30,7 @@ createGrid(10, 10);
     let selectedMonster = null; // Variable to track the selected monster for moving
     let isMoveMode = false; // Flag to track if move mode is enabled
     let isFirstRound = true; // Flag to track the first round of the game
+    let actionClicked = false; // Flag to track if Place Monster or Move Monster button has been clicked
 
      // Initialize players
      function initializePlayers(numPlayers) {
@@ -114,27 +99,32 @@ createGrid(10, 10);
             alert("Please enter names for at least 2 players and up to 4 players.");
         }
     });
-    
-
-    // Initialize game with default number of players 
-    // initializePlayers(parseInt(numPlayersInput.value));
 
     // Place a monster only after clicking the button
     placeMonsterBtn.addEventListener("click", () => {
-        if (!gameStarted) {
+    if (!gameStarted) {
         alert("You must start the game first!");
         return;
     }
-        console.log("Place monster button clicked");
-        grid.addEventListener("click", placeMonsterOnClick);
-        isMoveMode = false; // Disable move mode when placing a monster
-    });
+    console.log("Place monster button clicked");
+    grid.addEventListener("click", placeMonsterOnClick); // Corrected syntax
+    monsterPlaced = true;
+    isMoveMode = false; // Disable move mode when placing a monster
+    actionClicked = true;
+
+    // Disable the placeMonsterBtn button after it's clicked
+    placeMonsterBtn.disabled = true;
+});
 
     // Place a monster on click
     function placeMonsterOnClick(event) {
         if (!gameStarted) {
             alert("You must start the game first!");
             return;
+        }
+        if (!actionClicked) {
+            alert("You must click either the 'Place Monster' or 'Move Monster' button first!");
+            return; // Stop execution if action is not clicked
         }
         if (isMoveMode) return; // Ensure move mode is not enabled
 
@@ -172,6 +162,26 @@ createGrid(10, 10);
         console.log("Move monster button clicked");
         isMoveMode = true; // Enable move mode
         grid.addEventListener("click", selectMonsterForMove);
+        actionClicked = true;
+    });
+
+    // Grid cell click handler
+    grid.addEventListener("click", (event) => {
+        if (!gameStarted) {
+            alert("You must start the game first!");
+            return;
+        }
+
+        if (!actionClicked) { // Check if neither the Place Monster nor Move Monster button has been clicked
+            alert("You must click either the 'Place Monster' or 'Move Monster' button first!");
+            return;
+        }
+
+        if (isMoveMode) {
+            selectMonsterForMove(event);
+        } else {
+            placeMonsterOnClick(event);
+        }
     });
 
     // Select a monster to move
