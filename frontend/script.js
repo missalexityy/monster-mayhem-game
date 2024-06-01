@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Define colors for monsters
     const monsterColors = {
         vampire: 'red',
-        werewolf: 'brown',
+        werewolf: 'black',
         ghost: 'gray'
     };
 
@@ -92,14 +92,17 @@ document.addEventListener("DOMContentLoaded", () => {
      // Switch to the next player
      function switchPlayer() {
         currentPlayer = (currentPlayer + 1) % players.length;
+        // Check if all players have placed their monsters
+        if (players.every(player => player.monsters.length > 0)) {
         alert(`${players[currentPlayer].name}'s turn`);
+        }
     }
 
     // Initialize game with default number of players
     initializePlayers(parseInt(numPlayersInput.value));
 
    // Place a monster or move a monster if one exists
-function placeOrMoveMonster(index) {
+    function placeOrMoveMonster(index) {
     const monsterType = monsterTypeSelect.value;
     const cell = grid.children[index];
 
@@ -131,6 +134,7 @@ function placeMonster(index) {
         cell.appendChild(monster);
         players[currentPlayer].monsters.push({ type: monsterType, index });
         switchPlayer();
+        //alert(`${players[currentPlayer].name}'s turn`);
     }
 }
 
@@ -158,6 +162,5 @@ function isOwnMonster(index) {
     }
     return false;
 }
-
 
 }); 
