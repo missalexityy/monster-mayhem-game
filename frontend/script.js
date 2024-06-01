@@ -52,6 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Call updatePlayerNameInputs() to initially display player name inputs
+    updatePlayerNameInputs();
+
     startGameBtn.addEventListener("click", () => {
         const playerNameInputs = playerNamesContainer.querySelectorAll("input");
 
