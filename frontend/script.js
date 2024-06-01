@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const placeMonsterBtn = document.getElementById("placeMonster");
     const monsterTypeSelect = document.getElementById("monsterType");
     const numPlayersInput = document.getElementById("numPlayers");
+    const startGameBtn = document.getElementById("startGame");
     
     // Define colors for monsters
     const monsterColors = {
@@ -48,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
      }
  
      startGameBtn.addEventListener("click", () => {
-        const startGameBtn = document.getElementById("startGame");
+         const playerNameInputs = playerNamesContainer.querySelectorAll("input");
  
          players = Array.from(playerNameInputs)
              .map((input, index) => {
