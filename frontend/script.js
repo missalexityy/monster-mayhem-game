@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const splashScreen = document.getElementById("splash-screen");
-    const initialStartGameBtn = document.getElementById("initialStartGameBtn");
+    const initialEnterGameBtn = document.getElementById("initialEnterGameBtn");
     const gameContainer = document.getElementById("game-container");
     const grid = document.getElementById("grid");
     const playerNamesContainer = document.getElementById("playerNames");
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const numPlayersInput = document.getElementById("numPlayers");
     
     //For the first page
-    initialStartGameBtn.addEventListener("click", () => {
+    initialEnterGameBtn.addEventListener("click", () => {
         splashScreen.style.display = 'none';
         gameContainer.style.display = 'flex';
     });
