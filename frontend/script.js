@@ -1,11 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const splashScreen = document.getElementById("splash-screen");
+    const initialStartGameBtn = document.getElementById("initialStartGameBtn");
+    const gameContainer = document.getElementById("game-container");
     const grid = document.getElementById("grid");
+    const playerNamesContainer = document.getElementById("playerNames");
+
+    const startGameBtn = document.getElementById("startGame");
+    const monsterTypeSelect = document.getElementById("monsterType");
     const placeMonsterBtn = document.getElementById("placeMonster");
     const moveMonsterBtn = document.getElementById("moveMonster");
-    const monsterTypeSelect = document.getElementById("monsterType");
     const numPlayersInput = document.getElementById("numPlayers");
-    const startGameBtn = document.getElementById("startGame");
-    const playerNamesContainer = document.getElementById("playerNames");
+    
+    //For the first page
+    initialStartGameBtn.addEventListener("click", () => {
+        splashScreen.style.display = 'none';
+        gameContainer.style.display = 'flex';
+    });
 
     // Initialize grid
     for (let i = 0; i < 100; i++) {
@@ -195,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
             placeMonsterOnClick(event);
         }
     });
-
+/*
     // Select a monster to move
     function selectMonsterForMove(event) {
         if (!gameStarted) {
@@ -236,13 +246,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const destinationCell = grid.children[destinationIndex];
             
          // Check if destination cell is empty or contains player's own monster
-         //if (!destinationCell.firstChild || isOwnMonster(destinationIndex)) {
+         if (!destinationCell.firstChild || isOwnMonster(destinationIndex)) {
+            const monster = sourceCell.firstChild;
 
          // Check if the selected monster belongs to the current player
             if (monster.dataset.player === currentPlayer.toString()) {
 
             if (isValidMove(selectedMonster.index, destinationIndex) && canMoveToCell(destinationCell)) {
-            const monster = sourceCell.firstChild;
+            
 
     
             destinationCell.appendChild(monster);
@@ -254,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             console.log(`Monster moved to new index: ${destinationIndex}`); // Debug
-            selectedMonster = null;
+            selectedMonster = 1;
             grid.removeEventListener("click", moveMonsterToDestination);
             switchPlayer();
             handleMonsterInteractions(destinationCell); // Handle interactions between monsters on the destination cell
@@ -263,6 +274,64 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("You can only move your own monsters.");
         }
 
+        } else {
+            alert("You cannot move to a cell occupied by another player's monster.");
+        }
+    }
+}
+*/
+
+    function selectMonsterForMove(event) {
+    if (!gameStarted) {
+        alert("You must start the game first!");
+        return;
+    }
+    if (!isMoveMode) return; // Ensure move mode is enabled
+
+    const cell = event.target.closest('.cell');
+    const index = cell? parseInt(cell.dataset.index) : NaN; // Parse integer index
+    console.log(`Selecting monster at index: ${index}`); // Debug
+
+    if (!isNaN(index) && cell.firstChild) { // Check if the cell contains a monster
+        const player = parseInt(cell.firstChild.dataset.player);
+        if (player === currentPlayer) {
+            selectedMonster = { type: cell.firstChild.className, index };
+            console.log(`Monster selected for move: ${JSON.stringify(selectedMonster)}`); // Debug
+            grid.removeEventListener("click", selectMonsterForMove);
+            grid.addEventListener("click", moveMonsterToDestination);
+        } else {
+            alert("You can only select your own monsters to move.");
+            console.log("Failed to select monster: Not your own monster.");
+        }
+    } else {
+        alert("Invalid cell selection.");
+        console.log("Failed to select monster: Invalid cell.");
+    }
+}
+    function moveMonsterToDestination(event) {
+    const destinationIndex = parseInt(event.target.dataset.index);
+    console.log(`Moving monster to destination index: ${destinationIndex}`); // Debug
+
+    if (!isNaN(destinationIndex) && selectedMonster) {
+        const sourceCell = grid.children[selectedMonster.index];
+        const destinationCell = grid.children[destinationIndex];
+
+        if (!destinationCell.firstChild || isOwnMonster(destinationIndex)) {
+            const monster = sourceCell.firstChild;
+
+            destinationCell.appendChild(monster);
+            players[currentPlayer].monsters = players[currentPlayer].monsters.map(monster => {
+                if (monster.index === selectedMonster.index) {
+                    return {...monster, index: destinationIndex };
+                }
+                return monster;
+            });
+
+            console.log(`Monster moved to new index: ${destinationIndex}`); // Debug
+            selectedMonster = null;
+            grid.removeEventListener("click", moveMonsterToDestination);
+            switchPlayer();
+            handleMonsterInteractions(destinationCell); // Handle interactions between monsters on the destination cell
         } else {
             alert("You cannot move to a cell occupied by another player's monster.");
         }
@@ -399,6 +468,5 @@ document.addEventListener("DOMContentLoaded", () => {
         placeMonsterBtn.disabled = false;
         moveMonsterBtn.disabled = false;
 }
-
 
 });
