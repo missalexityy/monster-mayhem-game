@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const grid = document.getElementById("grid");
     const playerNamesContainer = document.getElementById("playerNames");
 
-    const startGameBtn = document.getElementById("startGame");
+    //const startGameBtn = document.getElementById("startGame");
     const monsterTypeSelect = document.getElementById("monsterType");
     const placeMonsterBtn = document.getElementById("placeMonster");
     const moveMonsterBtn = document.getElementById("moveMonster");
@@ -84,6 +84,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Call updatePlayerNameInputs() to initially display player name inputs
     updatePlayerNameInputs();
+
+    function startGame() {
+        fetch('/start-game', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify()
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data); // Log the response from the server
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Example of triggering the startGame function on button click
+    const startGameBtn = document.getElementById("startGame");
+    startGameBtn.addEventListener("click", startGame);
 
     // Where the game starts
     startGameBtn.addEventListener("click", () => {
