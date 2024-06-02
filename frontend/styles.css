@@ -80,8 +80,8 @@ h1 {
 }
 
 #grid div {
-    width: 30px; /* Adjusted size */
-    height: 30px; /* Adjusted size */
+    width: 30px; 
+    height: 30px; 
     background-color: #fff;
     border: 1px solid #292424;
     display: flex;
@@ -96,12 +96,26 @@ h1 {
     background-color: #e0e0e0;
 }
 
+
 #actions {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
 }
+
+#cell {
+        border: 1px solid black;
+        text-align: center;
+        line-height: 50px;
+        font-size: 20px;
+        cursor: pointer;
+}
+
+.selecyed {
+    border: 2px solid red;
+}
+
 
 button {
     padding: 10px 20px;
@@ -162,11 +176,11 @@ button:disabled {
 }
 
 #playerstatsTitle {
-    font-size: 24px; /* Adjust the font size */
-    font-weight: bold; /* Make the font bold */
-    color: white; /* Change the text color */
-    margin-bottom: 10px; /* Add space below the heading */
-    text-align: center; /* Center align the heading */
+    font-size: 24px; 
+    font-weight: bold; 
+    color: white; 
+    margin-bottom: 10px; 
+    text-align: center; 
     white-space: nowrap; 
 }
 
@@ -179,7 +193,7 @@ button:disabled {
     text-align: center;
     margin-right: auto;
     margin-bottom: 45px;
-    margin-left: 10%;
+    margin-left: 15%;
 }
 
 table {
