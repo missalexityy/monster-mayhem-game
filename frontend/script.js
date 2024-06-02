@@ -469,4 +469,38 @@ document.addEventListener("DOMContentLoaded", () => {
         moveMonsterBtn.disabled = false;
 }
 
+        // Update player status function
+        function updatePlayerStatus() {
+            const playerList = document.getElementById("playerList");
+            const monsterList = document.getElementById("monsterList");
+            const removedList = document.getElementById("removedList");
+
+        playerList.innerHTML = "";
+        monsterList.innerHTML = "";
+        removedList.innerHTML = "";
+
+        players.forEach(player => {
+        const playerCell = document.createElement("td");
+        playerCell.textContent = player.name;
+        playerList.appendChild(playerCell);
+
+        const monsterCell = document.createElement("td");
+        player.monsters.forEach(monster => {
+            const monsterItem = document.createElement("div");
+            monsterItem.textContent = `${monster.type}`;
+            monsterCell.appendChild(monsterItem);
+        });
+        monsterList.appendChild(monsterCell);
+
+        // Display removed monsters if any
+        const removedCell = document.createElement("td");
+        player.removedMonsters.forEach(removedMonster => {
+            const removedItem = document.createElement("div");
+            removedItem.textContent = `${removedMonster.type}`;
+            removedCell.appendChild(removedItem);
+        });
+        removedList.appendChild(removedCell);
+    });
+}
+
 });

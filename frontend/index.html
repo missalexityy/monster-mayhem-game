@@ -5,19 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monster Mayhem</title>
     <link rel="stylesheet" href="../frontend/styles.css">
-</head>
+</head> 
 <body>
     <body>
         <div id="splash-screen">
             <button id="initialEnterGameBtn">Enter Game</button>
         </div>
-    
         <div id="game-container" style="display: none;">
             <div id="controls">
                 <label for="numPlayers">Number of Players:</label>
                 <input type="number" id="numPlayers" min="2" max="4" value="4">
                 <div id="playerNames"></div>
                 <button id="startGame">Start Game</button>
+            </div>
+            <div id="playersStatus" class="status-table"> 
+                <h2 id ="playerstatsTitle">Players' Status</h2>
+                <table>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Players</th>
+                                <th>Monsters</th>
+                                <th>Removed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="player1"></td>
+                                <td id="monster1"></td>
+                                <td id="removed1"></td>
+                            </tr>
+                            <tr>
+                                <td id="player2"></td>
+                                <td id="monster2"></td>
+                                <td id="removed2"></td>
+                            </tr>
+                            <tr>
+                                <td id="player3"></td>
+                                <td id="monster3"></td>
+                                <td id="removed3"></td>
+                            </tr>
+                            <tr>
+                                <td id="player4"></td>
+                                <td id="monster4"></td>
+                                <td id="removed4"></td>
+                            </tr>
+                        </tbody>
+                    </table>
             </div>
             <div id="grid-container">
                 <div id="grid"></div>
@@ -33,6 +67,7 @@
                 </div>
             </div>
         </div>
+
     <script src="../frontend/script.js"></script>
 </body>
 </html>

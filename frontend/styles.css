@@ -72,8 +72,8 @@ h1 {
 
 #grid {
     display: grid;
-    grid-template-columns: repeat(10, 30px); /* Adjusted size */
-    grid-template-rows: repeat(10, 30px);    /* Adjusted size */
+    grid-template-columns: repeat(10, 30px);
+    grid-template-rows: repeat(10, 30px);   
     gap: 2px;
     margin-top: 50px;
     border: 2px solid black; /* Adjust the width of the grid border */
@@ -88,7 +88,7 @@ h1 {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 16px; /* Adjusted size */
+    font-size: 16px; 
     color: #000; /* Darker font color for contrast */
 }
 
@@ -131,7 +131,7 @@ button:disabled {
     align-items: center;
     justify-content: center;
     gap: 5px;
-    font-size: 24px; /* Adjust the font size as needed */
+    font-size: 24px; 
     color: #000; /* Darker font color for contrast */
 }
 
@@ -142,3 +142,66 @@ button:disabled {
         align-items: center;
     }
 }
+
+/* Ensure the controls and grid container takes the full height */
+#controls-and-grid {
+    height: 100%;
+}
+
+/* Player Stats */
+
+#gameSetup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px; /* Add margin to push the table down */
+}
+
+#game-container {
+    position: relative;
+}
+
+#playerstatsTitle {
+    font-size: 24px; /* Adjust the font size */
+    font-weight: bold; /* Make the font bold */
+    color: white; /* Change the text color */
+    margin-bottom: 10px; /* Add space below the heading */
+    text-align: center; /* Center align the heading */
+    white-space: nowrap; 
+}
+
+#playersStatus {
+    position: absolute;
+    bottom: 100px;
+    left: 120px;
+    transform: translateX(-50%);
+    width: 8%;
+
+    text-align: center;
+    margin-right: auto;
+    margin-bottom: 5px;
+    margin-left: 25%;
+}
+
+#playersStatus h2 {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    padding: 10%;
+}
+
+th, td {
+    padding: 15px;
+    border: 3px solid #272424;
+    background-color: #fff;
+}
+
+th {
+    background-color: #333;
+    color: white;
+    text-align: center;
+}
+
