@@ -101,19 +101,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Place a monster only after clicking the button
-    placeMonsterBtn.addEventListener("click", () => {
+        placeMonsterBtn.addEventListener("click", () => {
         if (!gameStarted) {
             alert("You must start the game first!");
         return;
     }
-    console.log("Place monster button clicked");
-    grid.addEventListener("click", placeMonsterOnClick); 
-    monsterPlaced = true;
-    isMoveMode = false; // Disable move mode when placing a monster
-    actionClicked = true;
+        console.log("Place monster button clicked");
+        grid.addEventListener("click", placeMonsterOnClick); 
+        monsterPlaced = true;
+        isMoveMode = false; // Disable move mode when placing a monster
+        actionClicked = true;
 
-    // Disable the placeMonsterBtn button after it's clicked
-    placeMonsterBtn.disabled = true;
+        // Disable the placeMonsterBtn button after it's clicked
+        placeMonsterBtn.disabled = true;
 });
 
     // Place a monster on click
@@ -136,8 +136,19 @@ document.addEventListener("DOMContentLoaded", () => {
             const monster = document.createElement("div");
             monster.className = monsterType;
             monster.dataset.player = currentPlayer; // Set the data attribute to indicate the player
-            monster.innerHTML = `${monsterIcons[monsterType]} ${currentPlayer + 1}`; // Set innerHTML to include the emoji/icon and player number
-            cell.appendChild(monster);
+            
+        // Create a span for the icon and the number
+            const monsterIconSpan = document.createElement("span");
+            monsterIconSpan.textContent = monsterIcons[monsterType];
+        
+            const playerNumberSpan = document.createElement("span");
+            playerNumberSpan.textContent = ` ${currentPlayer + 1}`; // Include space for separation
+        
+        // Append both spans to the monster div
+        monster.appendChild(monsterIconSpan);
+        monster.appendChild(playerNumberSpan);
+        
+        cell.appendChild(monster);
 
             //Update game state
             players[currentPlayer].monsters.push({ type: monsterType, index });

@@ -93,7 +93,7 @@ button:disabled {
 #playerNames label,
 #playerNames input {
     margin: 5px;
-    display: block;
+    display: grid;
     color: #f0f0f0;
 }
 
