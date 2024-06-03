@@ -249,32 +249,45 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
      // Function to handle cell click events
-     function onCellClick(event) {
-        const cell = event.currentTarget;
-        const monster = cell.querySelector('div'); // Select the monster div directly
+    function onCellClick(event) {
+    const cell = event.currentTarget;
+    const monster = cell.querySelector('div'); // Select the monster div directly
 
-        if (selectedMonster) {
-            if (!monster) {
+    if (selectedMonster) {
+        if (!monster || parseInt(monster.dataset.player) === currentPlayer) {
+            // Check if the new cell is a valid move
+            const oldIndex = parseInt(selectedMonster.parentElement.dataset.index);
+            const newIndex = parseInt(cell.dataset.index);
+            const isValidMove = isValidMonsterMove(oldIndex, newIndex);
+
+            if (isValidMove) {
                 // Move the selected monster to the new cell
-                const oldIndex = parseInt(selectedMonster.parentElement.dataset.index);
-                const newIndex = parseInt(cell.dataset.index);
                 updateGameState(oldIndex, newIndex);
 
                 cell.appendChild(selectedMonster);
+                selectedMonster.move(); // Call the move method on the Monster instance
                 selectedMonster = null;
 
                 // Switch to the next player after a short delay
                 setTimeout(() => {
                     switchPlayer();
                 }, 100);
-            }
-        } else if (monster) {
-            // Select the monster if it belongs to the current player
-            if (parseInt(monster.dataset.player) === currentPlayer) {
-                selectedMonster = monster;
+            } else {
+                alert("Invalid move! Please follow the movement rules.");
             }
         }
+    } else if (monster) {
+        // Select the monster if it belongs to the current player
+        if (parseInt(monster.dataset.player) === currentPlayer) {
+            selectedMonster = monster;
+        }
+    } else {
+        // Check if it's the first round after starting the game
+        if (isFirstRound) {
+            alert("During the first round, you can only place monsters. Click the 'Place Monster' button.");
+        }
     }
+}
 
     // Function to update the game state after moving a monster
     function updateGameState(oldIndex, newIndex) {
@@ -312,14 +325,6 @@ document.addEventListener("DOMContentLoaded", () => {
         placeMonsterBtn.disabled = false;
         moveMonsterBtn.disabled = false;
 }
-    /*
-    // Example usage: placing initial monsters
-    const initialMonsterPositions = [
-        { index: 1, type: 'monsterType1', player: 0 },
-        { index: 22, type: 'monsterType2', player: 1 },
-        { index: 37, type: 'monsterType3', player: 2 },
-        { index: 48, type: 'monsterType4', player: 3 }
-    ]; // Example initial monster positions with types and players */
 
     initialMonsterPositions.forEach(({ index, type, player }) => {
         const cell = gridElement.children[index];
@@ -338,6 +343,28 @@ document.addEventListener("DOMContentLoaded", () => {
         gridElement.addEventListener("click", onCellClick);
     });
 });
+
+    function isValidMonsterMove(oldIndex, newIndex) {
+        const oldRow = Math.floor(oldIndex / 8);
+        const oldCol = oldIndex % 8;
+        const newRow = Math.floor(newIndex / 8);
+        const newCol = newIndex % 8;
+
+        const rowDiff = Math.abs(newRow - oldRow);
+        const colDiff = Math.abs(newCol - oldCol);
+
+    // Check if the move is horizontal or vertical
+    if (rowDiff === 0 || colDiff === 0) {
+        return true; // Any number of squares horizontally or vertically is allowed
+    }
+
+    // Check if the move is diagonal
+    if (rowDiff === 1 && colDiff === 1) {
+        return true; // Up to two squares diagonally is allowed
+    }
+
+    return false; // Invalid move
+}
 
         // Update player status function
         function updatePlayerStatus() {
