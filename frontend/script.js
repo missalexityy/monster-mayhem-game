@@ -3,13 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const initialEnterGameBtn = document.getElementById("initialEnterGameBtn");
     const gameContainer = document.getElementById("game-container");
     const grid = document.getElementById("grid");
+    const gridElement = document.getElementById('grid');
     const playerNamesContainer = document.getElementById("playerNames");
 
-    //const startGameBtn = document.getElementById("startGame");
     const monsterTypeSelect = document.getElementById("monsterType");
     const placeMonsterBtn = document.getElementById("placeMonster");
     const moveMonsterBtn = document.getElementById("moveMonster");
-    const numPlayersInput = document.getElementById("numPlayers");
+    
     
     //For the first page
     initialEnterGameBtn.addEventListener("click", () => {
@@ -20,8 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize grid
     for (let i = 0; i < 100; i++) {
         const cell = document.createElement("div");
+        cell.className = 'cell';
         cell.dataset.index = i;
         cell.addEventListener("click", (event) => placeMonsterOnClick(event));
+        cell.addEventListener("click", onCellClick);
         grid.appendChild(cell);
     }
 
@@ -32,15 +34,34 @@ document.addEventListener("DOMContentLoaded", () => {
         ghost: '👻'
     };
 
+    let players = [
+        { id: 0, monsters: [] },
+        { id: 1, monsters: [] },
+        { id: 2, monsters: [] },
+        { id: 3, monsters: [] }
+        ];
+
     //Game state variables
-    let players = [];
+    //let players = [];
     let currentPlayer = 0;
     let gameStarted = false; //To see if the game has started
     let monsterPlaced = false; // Flag to track if a monster has been placed by the current player
     let selectedMonster = null; // Variable to track the selected monster for moving
     let isMoveMode = false; // Flag to track if move mode is enabled
-    let isFirstRound = true; // Flag to track the first round of the game
     let actionClicked = false; // Flag to track if Place Monster or Move Monster button has been clicked
+
+    const numPlayersInput = document.getElementById("numPlayers"); 
+
+    
+    // Update player name inputs when number of players changes
+    numPlayersInput.addEventListener("change", () => {
+        console.log("Number of players changed");
+        updatePlayerNameInputs();
+        const turnMessage = document.getElementById("turnMessage");
+        if (turnMessage) {
+            turnMessage.remove(); // Remove existing turn message if it exists
+        }
+    });
 
      // Initialize players
      function initializePlayers(numPlayers) {
@@ -51,16 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
         currentPlayer = 0;
         monsterPlaced = false;
     }
-
-    // Update player name inputs when number of players changes
-    numPlayersInput.addEventListener("change", () => {
-        console.log("Number of players changed");
-        updatePlayerNameInputs();
-        const turnMessage = document.getElementById("turnMessage");
-        if (turnMessage) {
-            turnMessage.remove(); // Remove existing turn message if it exists
-        }
-    });
 
     function updatePlayerNameInputs() {
         console.log("Updating player name inputs");
@@ -85,7 +96,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Call updatePlayerNameInputs() to initially display player name inputs
     updatePlayerNameInputs();
 
-    function startGame() {
+        // Update number of players when input changes
+         numPlayersInput.addEventListener("change", () => {
+        const numPlayers = parseInt(numPlayersInput.value);
+        initializePlayers(numPlayers);
+    });
+
+    /* function startGame() {
         fetch('/start-game', {
             method: 'POST',
             headers: {
@@ -99,11 +116,10 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(error => console.error('Error:', error));
     }
+*/
 
-    // Example of triggering the startGame function on button click
+    
     const startGameBtn = document.getElementById("startGame");
-    startGameBtn.addEventListener("click", startGame);
-
     // Where the game starts
     startGameBtn.addEventListener("click", () => {
         gameStarted = true;
@@ -145,6 +161,26 @@ document.addEventListener("DOMContentLoaded", () => {
         placeMonsterBtn.disabled = true;
 });
 
+    // Function to place a monster in a cell
+    function placeMonster(cell, monsterType, currentPlayer) {
+        const monster = document.createElement("div");
+        monster.className = monsterType;
+        monster.dataset.player = currentPlayer; // Set the data attribute to indicate the player
+
+        // Create a span for the icon and the number
+        const monsterIconSpan = document.createElement("span");
+        monsterIconSpan.textContent = monsterIcons[monsterType];
+
+        const playerNumberSpan = document.createElement("span");
+        playerNumberSpan.textContent = ` ${currentPlayer + 1}`; // Include space for separation
+
+        // Append both spans to the monster div
+        monster.appendChild(monsterIconSpan);
+        monster.appendChild(playerNumberSpan);
+
+        cell.appendChild(monster);
+    }
+
     // Place a monster on click
     function placeMonsterOnClick(event) {
         if (!gameStarted) {
@@ -162,22 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!isNaN(index) && !event.target.innerHTML) {
             const monsterType = monsterTypeSelect.value;
             const cell = grid.children[index];
-            const monster = document.createElement("div");
-            monster.className = monsterType;
-            monster.dataset.player = currentPlayer; // Set the data attribute to indicate the player
-            
-        // Create a span for the icon and the number
-            const monsterIconSpan = document.createElement("span");
-            monsterIconSpan.textContent = monsterIcons[monsterType];
-        
-            const playerNumberSpan = document.createElement("span");
-            playerNumberSpan.textContent = ` ${currentPlayer + 1}`; // Include space for separation
-        
-        // Append both spans to the monster div
-        monster.appendChild(monsterIconSpan);
-        monster.appendChild(playerNumberSpan);
-        
-        cell.appendChild(monster);
+            placeMonster(cell, monsterType, currentPlayer);
 
             //Update game state
             players[currentPlayer].monsters.push({ type: monsterType, index });
@@ -206,6 +227,92 @@ document.addEventListener("DOMContentLoaded", () => {
         moveMonsterBtn.disabled = true;
     });
 
+     // Function to handle cell click events
+     function onCellClick(event) {
+        const cell = event.currentTarget;
+        const monster = cell.querySelector('div'); // Select the monster div directly
+
+        if (selectedMonster) {
+            if (!monster) {
+                // Move the selected monster to the new cell
+                const oldIndex = parseInt(selectedMonster.parentElement.dataset.index);
+                const newIndex = parseInt(cell.dataset.index);
+                updateGameState(oldIndex, newIndex);
+
+                cell.appendChild(selectedMonster);
+                selectedMonster = null;
+                switchPlayer(); // Switch to the next player after moving
+            }
+        } else if (monster) {
+            // Select the monster if it belongs to the current player
+            if (parseInt(monster.dataset.player) === currentPlayer) {
+                selectedMonster = monster;
+            }
+        }
+    }
+
+    // Function to update the game state after moving a monster
+    function updateGameState(oldIndex, newIndex) {
+        players.forEach(player => {
+            player.monsters.forEach(monster => {
+                if (monster.index === oldIndex) {
+                    monster.index = newIndex;
+                }
+            });
+        });
+    }
+
+    // Switch to the next player
+    function switchPlayer() {
+        currentPlayer = (currentPlayer + 1) % players.length;
+        const numPlayers = players.length;
+        const numMonstersPlaced = players[currentPlayer].monsters.length;
+
+         // Check if all players have placed their monsters
+        const allMonstersPlaced = players.every(player => player.monsters.length > 0);
+
+        if (!allMonstersPlaced) {
+            // If not all monsters are placed, display message for placing a monster
+            alert(`${players[currentPlayer].name}'s turn. Place your monster.`);
+        } else {
+            // If all monsters are placed, display message for placing or moving existing monster
+            alert(`${players[currentPlayer].name}'s turn. Place or move your existing monster.`);
+        }
+    
+        // Reset the flag for the next player
+        monsterPlaced = false;
+        actionClicked = false; //Reset actionClicked flag
+
+        // Re-enable the action buttons
+        placeMonsterBtn.disabled = false;
+        moveMonsterBtn.disabled = false;
+}
+
+    // Example usage: placing initial monsters
+    const initialMonsterPositions = [
+        { index: 1, type: 'monsterType1', player: 0 },
+        { index: 22, type: 'monsterType2', player: 1 },
+        { index: 37, type: 'monsterType3', player: 2 },
+        { index: 48, type: 'monsterType4', player: 3 }
+    ]; // Example initial monster positions with types and players
+
+    initialMonsterPositions.forEach(({ index, type, player }) => {
+        const cell = gridElement.children[index];
+        placeMonster(cell, type, player);
+        players[player].monsters.push({ type, index });
+    });
+
+    // Add event listeners to the action buttons
+    placeMonsterBtn.addEventListener('click', () => {
+        actionClicked = true;
+        gridElement.addEventListener("click", placeMonsterOnClick);
+    });
+
+    moveMonsterBtn.addEventListener('click', () => {
+        actionClicked = true;
+    });
+});
+
     // Grid cell click handler
     grid.addEventListener("click", (event) => {
         if (!gameStarted) {
@@ -224,7 +331,8 @@ document.addEventListener("DOMContentLoaded", () => {
             placeMonsterOnClick(event);
         }
     });
-/*
+
+    /*
     // Select a monster to move
     function selectMonsterForMove(event) {
         if (!gameStarted) {
@@ -298,64 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 }
-*/
-
-    function selectMonsterForMove(event) {
-    if (!gameStarted) {
-        alert("You must start the game first!");
-        return;
-    }
-    if (!isMoveMode) return; // Ensure move mode is enabled
-
-    const cell = event.target.closest('.cell');
-    const index = cell? parseInt(cell.dataset.index) : NaN; // Parse integer index
-    console.log(`Selecting monster at index: ${index}`); // Debug
-
-    if (!isNaN(index) && cell.firstChild) { // Check if the cell contains a monster
-        const player = parseInt(cell.firstChild.dataset.player);
-        if (player === currentPlayer) {
-            selectedMonster = { type: cell.firstChild.className, index };
-            console.log(`Monster selected for move: ${JSON.stringify(selectedMonster)}`); // Debug
-            grid.removeEventListener("click", selectMonsterForMove);
-            grid.addEventListener("click", moveMonsterToDestination);
-        } else {
-            alert("You can only select your own monsters to move.");
-            console.log("Failed to select monster: Not your own monster.");
-        }
-    } else {
-        alert("Invalid cell selection.");
-        console.log("Failed to select monster: Invalid cell.");
-    }
-}
-    function moveMonsterToDestination(event) {
-    const destinationIndex = parseInt(event.target.dataset.index);
-    console.log(`Moving monster to destination index: ${destinationIndex}`); // Debug
-
-    if (!isNaN(destinationIndex) && selectedMonster) {
-        const sourceCell = grid.children[selectedMonster.index];
-        const destinationCell = grid.children[destinationIndex];
-
-        if (!destinationCell.firstChild || isOwnMonster(destinationIndex)) {
-            const monster = sourceCell.firstChild;
-
-            destinationCell.appendChild(monster);
-            players[currentPlayer].monsters = players[currentPlayer].monsters.map(monster => {
-                if (monster.index === selectedMonster.index) {
-                    return {...monster, index: destinationIndex };
-                }
-                return monster;
-            });
-
-            console.log(`Monster moved to new index: ${destinationIndex}`); // Debug
-            selectedMonster = null;
-            grid.removeEventListener("click", moveMonsterToDestination);
-            switchPlayer();
-            handleMonsterInteractions(destinationCell); // Handle interactions between monsters on the destination cell
-        } else {
-            alert("You cannot move to a cell occupied by another player's monster.");
-        }
-    }
-}
+    */
 
     // Create a new monster element
     function createMonster(monsterType) {
@@ -456,37 +507,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return false; // If cell or cell.firstChild is null, return false
 }
 
-    // Update number of players when input changes
-    numPlayersInput.addEventListener("change", () => {
-        const numPlayers = parseInt(numPlayersInput.value);
-        initializePlayers(numPlayers);
-    });
 
-    // Switch to the next player
-    function switchPlayer() {
-        currentPlayer = (currentPlayer + 1) % players.length;
-        const numPlayers = players.length;
-        const numMonstersPlaced = players[currentPlayer].monsters.length;
-
-         // Check if all players have placed their monsters
-        const allMonstersPlaced = players.every(player => player.monsters.length > 0);
-
-        if (!allMonstersPlaced) {
-            // If not all monsters are placed, display message for placing a monster
-            alert(`${players[currentPlayer].name}'s turn. Place your monster.`);
-        } else {
-            // If all monsters are placed, display message for placing or moving existing monster
-            alert(`${players[currentPlayer].name}'s turn. Place or move your existing monster.`);
-        }
-    
-        // Reset the flag for the next player
-        monsterPlaced = false;
-        actionClicked = false; //Reset actionClicked flag
-
-        // Re-enable the action buttons
-        placeMonsterBtn.disabled = false;
-        moveMonsterBtn.disabled = false;
-}
 
         // Update player status function
         function updatePlayerStatus() {
@@ -520,6 +541,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         removedList.appendChild(removedCell);
     });
-}
-
-});
+};

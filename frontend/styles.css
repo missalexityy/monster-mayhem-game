@@ -104,7 +104,7 @@ h1 {
     margin-top: 20px;
 }
 
-#cell {
+.cell {
         border: 1px solid black;
         text-align: center;
         line-height: 50px;
@@ -112,7 +112,7 @@ h1 {
         cursor: pointer;
 }
 
-.selecyed {
+.selected {
     border: 2px solid red;
 }
 
@@ -129,7 +129,7 @@ button {
 }
 
 button:disabled {
-    background-color: #cccccc;
+    background-color: #777070c7;
     cursor: not-allowed;
 }
 
@@ -137,7 +137,7 @@ button:disabled {
 #playerNames input {
     margin: 5px;
     display: block;
-    color: #f0f0f0; /* Lighter font color */
+    color: #000000; /* Lighter font color */
 }
 
 .monster {
