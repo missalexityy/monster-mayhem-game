@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const cell = document.createElement("div");
         cell.className = 'cell';
         cell.dataset.index = i;
-        cell.addEventListener("click", (event) => placeMonsterOnClick(event));
-        cell.addEventListener("click", onCellClick);
+        cell.addEventListener("click", (event) => onCellClick(event));
+        //cell.addEventListener("click", onCellClick);
         grid.appendChild(cell);
     }
 
@@ -214,6 +214,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const index = parseInt(event.target.dataset.index);
         console.log(`Placing monster at index: ${index}`); // Debug
+
+
         if (!isNaN(index) && !event.target.innerHTML) {
             const monsterType = monsterTypeSelect.value;
             const cell = grid.children[index];
@@ -260,7 +262,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 cell.appendChild(selectedMonster);
                 selectedMonster = null;
-                switchPlayer(); // Switch to the next player after moving
+
+                // Switch to the next player after a short delay
+                setTimeout(() => {
+                    switchPlayer();
+                }, 100);
             }
         } else if (monster) {
             // Select the monster if it belongs to the current player
@@ -333,93 +339,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-   
-
-    /*
-    // Select a monster to move
-    function selectMonsterForMove(event) {
-        if (!gameStarted) {
-            alert("You must start the game first!");
-            return;
-        }
-        if (!isMoveMode) return; // Ensure move mode is enabled
-        
-        const cell = event.target.closest('.cell');
-        const index = cell ? parseInt(cell.dataset.index) : NaN; // Parse integer index
-        console.log(`Selecting monster at index: ${index}`); // Debug
-
-        if (!isNaN(index) && cell.firstChild) {
-            const player = parseInt(cell.firstChild.dataset.player);
-            if (player === currentPlayer) {
-                selectedMonster = { type: cell.firstChild.className, index };
-                console.log(`Monster selected for move: ${JSON.stringify(selectedMonster)}`); // Debug
-                grid.removeEventListener("click", selectMonsterForMove);
-                grid.addEventListener("click", moveMonsterToDestination);
-            } else {
-                alert("You can only select your own monsters to move.");
-                console.log("Failed to select monster: Not your own monster.");
-            }
-        } else {
-            alert("Invalid cell selection.");
-            console.log("Failed to select monster: Invalid cell.");
-        }
-    }
-    
-    
-    // Move monster to the selected destination
-    function moveMonsterToDestination(event) {
-        const destinationIndex = parseInt(event.target.dataset.index);
-        console.log(`Moving monster to destination index: ${destinationIndex}`); // Debug
-        
-        if (!isNaN(destinationIndex) && selectedMonster) {
-            const sourceCell = grid.children[selectedMonster.index];
-            const destinationCell = grid.children[destinationIndex];
-            
-         // Check if destination cell is empty or contains player's own monster
-         if (!destinationCell.firstChild || isOwnMonster(destinationIndex)) {
-            const monster = sourceCell.firstChild;
-
-         // Check if the selected monster belongs to the current player
-            if (monster.dataset.player === currentPlayer.toString()) {
-
-            if (isValidMove(selectedMonster.index, destinationIndex) && canMoveToCell(destinationCell)) {
-            
-
-    
-            destinationCell.appendChild(monster);
-            players[currentPlayer].monsters = players[currentPlayer].monsters.map(monster => {
-                if (monster.index === selectedMonster.index) {
-                    return { ...monster, index: destinationIndex };
-                }
-                return monster;
-            });
-
-            console.log(`Monster moved to new index: ${destinationIndex}`); // Debug
-            selectedMonster = 1;
-            grid.removeEventListener("click", moveMonsterToDestination);
-            switchPlayer();
-            handleMonsterInteractions(destinationCell); // Handle interactions between monsters on the destination cell
-
-        } else if (condition) {
-            alert("You can only move your own monsters.");
-        }
-
-        } else {
-            alert("You cannot move to a cell occupied by another player's monster.");
-        }
-    }
-}
-    */
-
-    // Create a new monster element
-    function createMonster(monsterType) {
-        const monster = document.createElement("div");
-            monster.className = monsterType;
-            monster.textContent = currentPlayer + 1; // Label with player number
-            monster.dataset.player = currentPlayer; // Set data attribute for the player
-            monster.style.backgroundColor = monsterColors[monsterType];
-        return monster;
-}
 
     // Check if a move is valid
     function isValidMove(startIndex, endIndex) {
