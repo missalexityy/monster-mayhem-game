@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const numPlayersInput = document.getElementById("numPlayers"); 
 
-    
+
     // Update player name inputs when number of players changes
     numPlayersInput.addEventListener("change", () => {
         console.log("Number of players changed");
@@ -145,6 +145,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+     // Grid cell click handler
+     grid.addEventListener("click", (event) => {
+        if (!gameStarted) {
+            alert("You must start the game first!");
+            return;
+        }
+
+        if (!actionClicked) { // Check if neither the Place Monster nor Move Monster button has been clicked
+            alert("You must click either the 'Place Monster' or 'Move Monster' button first!");
+            return;
+        }
+
+        if (isMoveMode) {
+            selectMonsterForMove(event);
+        } else {
+            placeMonsterOnClick(event);
+        }
+    });
+
     // Place a monster only after clicking the button
         placeMonsterBtn.addEventListener("click", () => {
         if (!gameStarted) {
@@ -221,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         console.log("Move monster button clicked");
         isMoveMode = true; // Enable move mode
-        grid.addEventListener("click", selectMonsterForMove);
+        grid.addEventListener("click", onCellClick);
         actionClicked = true;
 
         moveMonsterBtn.disabled = true;
@@ -287,14 +306,14 @@ document.addEventListener("DOMContentLoaded", () => {
         placeMonsterBtn.disabled = false;
         moveMonsterBtn.disabled = false;
 }
-
+    /*
     // Example usage: placing initial monsters
     const initialMonsterPositions = [
         { index: 1, type: 'monsterType1', player: 0 },
         { index: 22, type: 'monsterType2', player: 1 },
         { index: 37, type: 'monsterType3', player: 2 },
         { index: 48, type: 'monsterType4', player: 3 }
-    ]; // Example initial monster positions with types and players
+    ]; // Example initial monster positions with types and players */
 
     initialMonsterPositions.forEach(({ index, type, player }) => {
         const cell = gridElement.children[index];
@@ -310,27 +329,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     moveMonsterBtn.addEventListener('click', () => {
         actionClicked = true;
+        gridElement.addEventListener("click", onCellClick);
     });
 });
 
-    // Grid cell click handler
-    grid.addEventListener("click", (event) => {
-        if (!gameStarted) {
-            alert("You must start the game first!");
-            return;
-        }
-
-        if (!actionClicked) { // Check if neither the Place Monster nor Move Monster button has been clicked
-            alert("You must click either the 'Place Monster' or 'Move Monster' button first!");
-            return;
-        }
-
-        if (isMoveMode) {
-            selectMonsterForMove(event);
-        } else {
-            placeMonsterOnClick(event);
-        }
-    });
+   
 
     /*
     // Select a monster to move
