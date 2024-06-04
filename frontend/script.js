@@ -118,7 +118,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 */
 
-    
+    // Update player status function
+    function updatePlayerStatus() {
+    const playerCells = document.querySelectorAll("#playersStatus td[id^='player']");
+    const monsterCells = document.querySelectorAll("#playersStatus td[id^='monster']");
+    const removedCells = document.querySelectorAll("#playersStatus td[id^='removed']");
+
+      // Clear the table cells
+      playerCells.forEach(cell => cell.textContent = '');
+      monsterCells.forEach(cell => cell.textContent = '');
+      removedCells.forEach(cell => cell.textContent = '');
+
+    players.forEach((player, index) => {
+        playerCells[index].textContent = player.name;
+        monsterCells[index].textContent = player.monsters.length;
+        removedCells[index].textContent = player.removedMonsters ? player.removedMonsters.length : 0;
+    });
+}
+
     const startGameBtn = document.getElementById("startGame");
     // Where the game starts
     startGameBtn.addEventListener("click", () => {
@@ -136,8 +153,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (players.length >= 2 && players.length <= 4) {
             alert("Game Started!");
-            switchPlayer(); // Start the game by switching to the first player's turn
-            
+             // Update player status with player names
+            updatePlayerStatus();
+            setTimeout(() => {
+                switchPlayer();
+                //alert(`${players[currentPlayer].name}'s turn`);
+            }, 400); // Delay to ensure the player status is placed before the random player's turn
+
             // Remove the event listener after the game has started
             startGameBtn.removeEventListener("click", startGame);
         } else {
@@ -158,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (isMoveMode) {
-            selectMonsterForMove(event);
+            onCellClick(event);
         } else {
             placeMonsterOnClick(event);
         }
@@ -226,6 +248,9 @@ document.addEventListener("DOMContentLoaded", () => {
             monsterPlaced = true;
             grid.removeEventListener("click", placeMonsterOnClick);
 
+            // Update player status
+            updatePlayerStatus();
+
             //Switch to the next player after a short delay
             setTimeout(() => {
                 switchPlayer();
@@ -285,6 +310,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         });
+
+           // Update player status
+        updatePlayerStatus();
+
     }
 
     // Switch to the next player
@@ -319,13 +348,13 @@ document.addEventListener("DOMContentLoaded", () => {
         { index: 22, type: 'monsterType2', player: 1 },
         { index: 37, type: 'monsterType3', player: 2 },
         { index: 48, type: 'monsterType4', player: 3 }
-    ]; // Example initial monster positions with types and players */
+    ]; // Example initial monster positions with types and players 
 
     initialMonsterPositions.forEach(({ index, type, player }) => {
         const cell = gridElement.children[index];
         placeMonster(cell, type, player);
         players[player].monsters.push({ type, index });
-    });
+    }); */
 
     // Add event listeners to the action buttons
     placeMonsterBtn.addEventListener('click', () => {
@@ -339,36 +368,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-        // Update player status function
-        function updatePlayerStatus() {
-            const playerList = document.getElementById("playerList");
-            const monsterList = document.getElementById("monsterList");
-            const removedList = document.getElementById("removedList");
-
-        playerList.innerHTML = "";
-        monsterList.innerHTML = "";
-        removedList.innerHTML = "";
-
-        players.forEach(player => {
-        const playerCell = document.createElement("td");
-        playerCell.textContent = player.name;
-        playerList.appendChild(playerCell);
-
-        const monsterCell = document.createElement("td");
-        player.monsters.forEach(monster => {
-            const monsterItem = document.createElement("div");
-            monsterItem.textContent = `${monster.type}`;
-            monsterCell.appendChild(monsterItem);
-        });
-        monsterList.appendChild(monsterCell);
-
-        // Display removed monsters if any
-        const removedCell = document.createElement("td");
-        player.removedMonsters.forEach(removedMonster => {
-            const removedItem = document.createElement("div");
-            removedItem.textContent = `${removedMonster.type}`;
-            removedCell.appendChild(removedItem);
-        });
-        removedList.appendChild(removedCell);
-    });
-};
+        
+  
