@@ -319,9 +319,23 @@ document.addEventListener("DOMContentLoaded", () => {
             const horizontalDistance = Math.abs((oldIndex % 10) - (newIndex % 10));
             const verticalDistance = Math.abs(Math.floor(oldIndex / 10) - Math.floor(newIndex / 10));
 
-            if (horizontalDistance > 2 || verticalDistance > 2 || (horizontalDistance > 1 && verticalDistance > 1)) { 
+            console.log(`Old index: ${oldIndex}`);
+            console.log(`New index: ${newIndex}`);
+            console.log(`Horizontal distance: ${horizontalDistance}`);
+            console.log(`Vertical distance: ${verticalDistance}`);
+
+            if (horizontalDistance > 2 || verticalDistance > 2) { 
                     alert("You can only move diagonally up to 2 squares.");
                     return;
+                } else if (horizontalDistance > 1 && verticalDistance > 1) {
+                    if (Math.max(horizontalDistance, verticalDistance) > 2) {
+                        alert("You can only move diagonally up to 2 squares.");
+                        return;
+                    } else if (horizontalDistance === 2 && verticalDistance === 2) {
+                        updateGameState(oldIndex, newIndex);
+                        cell.appendChild(selectedMonster);
+                        selectedMonster = null;
+                    }
                 } else {
                     updateGameState(oldIndex, newIndex);
                     cell.appendChild(selectedMonster);
