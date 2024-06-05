@@ -261,10 +261,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-        if (!isNaN(index) && !event.target.innerHTML) {
-            const monsterType = monsterTypeSelect.value;
-            const cell = grid.children[index];
-            placeMonster(cell, monsterType, currentPlayer);
+    //Check if the player has already placed 10 monsters
+    if (players[currentPlayer].monsters.length >= 10) {
+        alert("You have already placed the maximum number of monsters (10).");
+        return;
+    }
+
+    if (!isNaN(index) && !event.target.innerHTML) {
+        const monsterType = monsterTypeSelect.value;
+        const cell = grid.children[index];
+        placeMonster(cell, monsterType, currentPlayer);
 
             //Update game state
             players[currentPlayer].monsters.push({ type: monsterType, index });
