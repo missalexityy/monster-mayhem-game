@@ -101,22 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
         initializePlayers(numPlayers);
     });
 
-    /* function startGame() {
-        fetch('/start-game', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify()
-        })
-        .then(response => response.text())
-        .then(data => {
-            console.log(data); // Log the response from the server
-        })
-        .catch(error => console.error('Error:', error));
-    }
-*/
-
     // Update player status function
     function updatePlayerStatus() {
     const playerCells = document.querySelectorAll("#playersStatus td[id^='player']");
@@ -180,8 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (isMoveMode) {
             onCellClick(event);
-        } else {
-            placeMonsterOnClick(event);
+       
         }
     });
 
