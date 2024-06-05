@@ -302,34 +302,35 @@ document.addEventListener("DOMContentLoaded", () => {
         moveMonsterBtn.disabled = true;
     });
 
-     // Function to handle cell click events of moving monsters
+     // Function to handle cell click events
      function onCellClick(event) {
-    const cell = event.currentTarget;
-    const monster = cell.querySelector('div'); // Select the monster div directly
+        const cell = event.currentTarget;
+        const monster = cell.querySelector('div'); // Select the monster div directly
 
-    if (selectedMonster) {
-        if (!monster) {
-            // Move the selected monster to the new cell
-            const oldIndex = parseInt(selectedMonster.parentElement.dataset.index);
-            const newIndex = parseInt(cell.dataset.index);
-           
-            // Check if the move is horizontal or vertical
-            if ((oldIndex % 10 === newIndex % 10) || (Math.floor(oldIndex / 10) === Math.floor(newIndex / 10))) {
-                // Horizontal or vertical move, allow any distance
-                updateGameState(oldIndex, newIndex);
-                cell.appendChild(selectedMonster);
-                selectedMonster = null;
-            } else {
-                // Diagonal move, check if distance is more than 2
-                const horizontalDistance = Math.abs((oldIndex % 10) - (newIndex % 10));
-                const verticalDistance = Math.abs(Math.floor(oldIndex / 10) - Math.floor(newIndex / 10));
+        if (selectedMonster) {
+            if (!monster) {
+                // Move the selected monster to the new cell
+                const oldIndex = parseInt(selectedMonster.parentElement.dataset.index);
+                const newIndex = parseInt(cell.dataset.index);
+               
+                // Check if the move is horizontal or vertical
+                if ((oldIndex % 10 === newIndex % 10) || (Math.floor(oldIndex / 10) === Math.floor(newIndex / 10))) {
+                    // Horizontal or vertical move, allow any distance
+                    updateGameState(oldIndex, newIndex);
+                    cell.appendChild(selectedMonster);
+                    selectedMonster = null;
+        } else {
 
-                console.log(`Old index: ${oldIndex}`);
-                console.log(`New index: ${newIndex}`);
-                console.log(`Horizontal distance: ${horizontalDistance}`);
-                console.log(`Vertical distance: ${verticalDistance}`);
+            // Diagonal move, check if distance is more than 2
+            const horizontalDistance = Math.abs((oldIndex % 10) - (newIndex % 10));
+            const verticalDistance = Math.abs(Math.floor(oldIndex / 10) - Math.floor(newIndex / 10));
 
-                if (horizontalDistance > 2 || verticalDistance > 2) { 
+            console.log(`Old index: ${oldIndex}`);
+            console.log(`New index: ${newIndex}`);
+            console.log(`Horizontal distance: ${horizontalDistance}`);
+            console.log(`Vertical distance: ${verticalDistance}`);
+
+            if (horizontalDistance > 2 || verticalDistance > 2) { 
                     alert("You can only move diagonally up to 2 squares.");
                     return;
                 } else if (horizontalDistance > 1 && verticalDistance > 1) {
@@ -346,38 +347,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     cell.appendChild(selectedMonster);
                     selectedMonster = null;
                 }
-            }
-            // Switch to the next player after a short delay
-            setTimeout(() => {
-                switchPlayer();
-            }, 100);
-        } else {
-            if (monster && monster.dataset.player === `${currentPlayer}`) {
-                // Allow moving over own player's monsters
-                const oldIndex = parseInt(selectedMonster.parentElement.dataset.index);
-                const newIndex = parseInt(cell.dataset.index);
-                cell.removeChild(monster);
-                cell.appendChild(selectedMonster);
-                selectedMonster = null;
-                updateGameState(oldIndex, newIndex);
-                // Switch to the next player after a short delay
-                setTimeout(() => {
-                    switchPlayer();
-                }, 100);
-            } else {
-                // Prevent moving over other players' monsters
-                alert("You cannot move over other players' monsters.");
-                return;
-            }
         }
-    } else if (monster) {
-        // Select the monster if it belongs to the current player
-        if (parseInt(monster.dataset.player) === currentPlayer) {
-            selectedMonster = monster;
+                
+        // Switch to the next player after a short delay
+        setTimeout(() => {
+            switchPlayer();
+        }, 100);
+
+            }
+        } else if (monster) {
+            // Select the monster if it belongs to the current player
+            if (parseInt(monster.dataset.player) === currentPlayer) {
+                selectedMonster = monster;
+            }
         }
     }
-}
-    
+
     // Function to update the game state after moving a monster
     function updateGameState(oldIndex, newIndex) {
         players.forEach(player => {
