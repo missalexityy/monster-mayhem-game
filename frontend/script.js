@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const initialEnterGameBtn = document.getElementById("initialEnterGameBtn");
     const gameContainer = document.getElementById("game-container");
     const grid = document.getElementById("grid");
-    const gridElement = document.getElementById('grid');
     const playerNamesContainer = document.getElementById("playerNames");
 
     const monsterTypeSelect = document.getElementById("monsterType");
@@ -237,6 +236,47 @@ document.addEventListener("DOMContentLoaded", () => {
         const index = parseInt(event.target.dataset.index);
         console.log(`Placing monster at index: ${index}`); // Debug
 
+    // Determine the player's side of the grid
+    let playerSide;
+    switch (currentPlayer) {
+        case 0:
+            playerSide = 'top';
+            break;
+        case 1:
+            playerSide = 'bottom';
+            break;
+        case 2:
+            playerSide = 'left';
+            break;
+        case 3:
+            playerSide = 'right';
+            break;
+        default:
+            console.error('Invalid player ID');
+            return;
+    }
+
+    // Check if the cell is within the player's side of the grid
+    let isValidPlacement = false;
+    switch (playerSide) {
+        case 'top':
+            isValidPlacement = index < 10;
+            break;
+        case 'bottom':
+            isValidPlacement = index >= 90;
+            break;
+        case 'left':
+            isValidPlacement = index % 10 === 0;
+            break;
+        case 'right':
+            isValidPlacement = index % 10 === 9;
+            break;
+    }
+
+    if (!isValidPlacement) {
+        alert(`You can only place monsters on your side of the grid (${playerSide})`);
+        return;
+    }
 
         if (!isNaN(index) && !event.target.innerHTML) {
             const monsterType = monsterTypeSelect.value;
@@ -341,31 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
         placeMonsterBtn.disabled = false;
         moveMonsterBtn.disabled = false;
 }
-    /*
-    // Example usage: placing initial monsters
-    const initialMonsterPositions = [
-        { index: 1, type: 'monsterType1', player: 0 },
-        { index: 22, type: 'monsterType2', player: 1 },
-        { index: 37, type: 'monsterType3', player: 2 },
-        { index: 48, type: 'monsterType4', player: 3 }
-    ]; // Example initial monster positions with types and players 
 
-    initialMonsterPositions.forEach(({ index, type, player }) => {
-        const cell = gridElement.children[index];
-        placeMonster(cell, type, player);
-        players[player].monsters.push({ type, index });
-    }); */
-
-    // Add event listeners to the action buttons
-    placeMonsterBtn.addEventListener('click', () => {
-        actionClicked = true;
-        gridElement.addEventListener("click", placeMonsterOnClick);
-    });
-
-    moveMonsterBtn.addEventListener('click', () => {
-        actionClicked = true;
-        gridElement.addEventListener("click", onCellClick);
-    });
 });
 
         
