@@ -306,15 +306,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Move the selected monster to the new cell
                 const oldIndex = parseInt(selectedMonster.parentElement.dataset.index);
                 const newIndex = parseInt(cell.dataset.index);
-                updateGameState(oldIndex, newIndex);
+               
+                // Check if the move is horizontal or vertical
+                if ((oldIndex % 10 === newIndex % 10) || (Math.floor(oldIndex / 10) === Math.floor(newIndex / 10))) {
+                    // Horizontal or vertical move, allow any distance
+                    updateGameState(oldIndex, newIndex);
+                    cell.appendChild(selectedMonster);
+                    selectedMonster = null;
+        } else {
 
-                cell.appendChild(selectedMonster);
-                selectedMonster = null;
+            // Diagonal move, check if distance is more than 2
+            const horizontalDistance = Math.abs((oldIndex % 10) - (newIndex % 10));
+            const verticalDistance = Math.abs(Math.floor(oldIndex / 10) - Math.floor(newIndex / 10));
 
-                // Switch to the next player after a short delay
-                setTimeout(() => {
-                    switchPlayer();
-                }, 100);
+            if (horizontalDistance > 2 || verticalDistance > 2 || (horizontalDistance > 1 && verticalDistance > 1)) { 
+                    alert("You can only move diagonally up to 2 squares.");
+                    return;
+                } else {
+                    updateGameState(oldIndex, newIndex);
+                    cell.appendChild(selectedMonster);
+                    selectedMonster = null;
+                }
+        }
+                
+        // Switch to the next player after a short delay
+        setTimeout(() => {
+            switchPlayer();
+        }, 100);
+
             }
         } else if (monster) {
             // Select the monster if it belongs to the current player
