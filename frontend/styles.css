@@ -1,0 +1,228 @@
+body {
+    background-image: url('monstermayhem.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #f0f0f0; /* Lighter font color */
+}
+
+/* Splash screen */
+#splash-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+#splash-screen button {
+    padding: 20px 40px;
+    font-size: 24px;
+    cursor: pointer;
+    background-color: #88bd34;
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+/* Adjustments for landscape layout */
+#game-container {
+    display: flex;
+    flex-direction: row; /* Arrange children in a row */
+    align-items: flex-start;
+    width: 90%;
+    height: 90%;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+#controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 20px;
+    flex: 1;
+}
+
+#playerNames {
+    margin-bottom: 10px;
+}
+
+#grid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 20px;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(10, 30px);
+    grid-template-rows: repeat(10, 30px);   
+    gap: 2px;
+    margin-top: 50px;
+    border: 2px solid black; /* Adjust the width of the grid border */
+}
+
+#grid div {
+    width: 30px; 
+    height: 30px; 
+    background-color: #fff;
+    border: 1px solid #292424;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px; 
+    color: #000; /* Darker font color for contrast */
+}
+
+#grid div:hover {
+    background-color: #e0e0e0;
+}
+
+
+#actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.cell {
+        border: 1px solid black;
+        text-align: center;
+        line-height: 50px;
+        font-size: 20px;
+        cursor: pointer;
+}
+
+.selected {
+    border: 2px solid red;
+}
+
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #88bd34;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:disabled {
+    background-color: #777070c7;
+    cursor: not-allowed;
+}
+
+#playerNames label,
+#playerNames input {
+    margin: 5px;
+    display: block;
+    color: #000000; /* Lighter font color */
+}
+
+.monster {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-size: 24px; 
+    color: #000; /* Darker font color for contrast */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    #game-container {
+        flex-direction: column; /* Stack elements vertically on smaller screens */
+        align-items: center;
+    }
+}
+
+/* Ensure the controls and grid container takes the full height */
+#controls-and-grid {
+    height: 100%;
+}
+
+/* Player Stats */
+
+#gameSetup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px; /* Add margin to push the table down */
+}
+
+#game-container {
+    position: relative;
+}
+
+#playerstatsTitle {
+    font-size: 24px; 
+    font-weight: bold; 
+    color: white; 
+    margin-bottom: 10px; 
+    text-align: center; 
+    white-space: nowrap; 
+}
+
+#playersStatus {
+    position: absolute;
+    bottom: 100px;
+    left: 120px;
+    transform: translateX(-50%);
+    width: 10%;
+    text-align: center;
+    margin-right: auto;
+    margin-bottom: 45px;
+    margin-left: 15%;
+}
+
+table {
+    width: auto;
+    border-collapse: collapse;
+    padding: 10%;
+    
+}
+
+th, td {
+    padding: 15px;
+    border: 3px solid #272424;
+    background-color: #fff;
+    color: #000000;
+}
+
+th {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+footer {
+    padding: 10px;
+    text-align: center;
+    font-size: 10px;
+    position: absolute;
+    margin-bottom: 15%;
+    margin-right: 3%;
+    width: 100%;
+}
